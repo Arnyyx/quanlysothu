@@ -47,8 +47,7 @@ public class ControllerDongVat {
     private ViewDongVat view;
     private ModelDongVat dongVat = new ModelDongVat();
     private File fileAnhDongVat = null;
-//    String apiString = "https://quan-ly-tu.onrender.com/dongVat/";
-    String apiString = "http://localhost:8000/dongvat/";
+    String apiString = Utils.Utility.apiString + "dongVat/";
 
     public ControllerDongVat() {
     }

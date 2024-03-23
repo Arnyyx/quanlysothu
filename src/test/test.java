@@ -1,6 +1,7 @@
 package test;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
@@ -48,6 +49,9 @@ public class test extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         new View.Menu(this);
+
+        SpinnerProgress spinner = new SpinnerProgress();
+        spinner.setIndeterminate(true);
 
         // Panel chứa table
         JPanel tablePanel = new JPanel(new BorderLayout());
@@ -145,15 +149,8 @@ public class test extends JFrame {
         btnXuat.setFont(font);
         btnLoad.setFont(font);
 
-//        SpinnerProgress spinner = new SpinnerProgress(new FlatSVGIcon("raven/swing/spinner/save.svg"));
-//
-//        spinner.setHorizontalTextPosition(SwingConstants.CENTER);
-//        spinner.setVerticalTextPosition(SwingConstants.BOTTOM);
-//
-//        spinner.setStringPainted(true);
-//
-//        spinner.setIndeterminate(true);
-
-        setVisible(true);
+        btnLoad.add(spinner);
+        
+                setVisible(true);
     }
 }

@@ -6,18 +6,14 @@ package Controller;
 
 import Model.ModelVe;
 import Utils.IntegerDocumentFilter;
-import Utils.MyFileChooser;
 import Utils.XuLyFileExcel;
 import View.ViewVe;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -25,17 +21,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -46,8 +34,7 @@ public class ControllerVe {
 
     private ViewVe view;
     private ModelVe modelVe = new ModelVe();
-//    String apiString = "https://quan-ly-tu.onrender.com/vethamquan/";
-    String apiString = "http://localhost:8000/vethamquan/";
+    String apiString = Utils.Utility.apiString + "vethamquan/";
 
     public ControllerVe() {
     }

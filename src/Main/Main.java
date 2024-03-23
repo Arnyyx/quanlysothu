@@ -7,10 +7,13 @@ package Main;
 import Controller.ControllerDongVat;
 import View.ViewDongVat;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import raven.swing.spinner.SpinnerProgress;
 
 /**
  *
@@ -21,21 +24,26 @@ public class Main {
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
-        ViewDongVat v = new ViewDongVat();
-        ControllerDongVat c = new ControllerDongVat(v);
+        if (!isApiAvailable(Utils.Utility.apiString)) {
+            JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
+        } else {
+            ViewDongVat v = new ViewDongVat();
+            ControllerDongVat c = new ControllerDongVat(v);
+        }
     }
 
-    public static boolean checkConnect() {
+    public static boolean isApiAvailable(String apiUrl) {
         try {
-            String apiUrl = "http://localhost:8000/";
-
+//            JOptionPane.showMessageDialog(null, "Đang tải");
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("HEAD");
+
+            int responseCode = connection.getResponseCode();
+
             connection.disconnect();
-            return true;
+            return responseCode == HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
             return false;
         }
     }
