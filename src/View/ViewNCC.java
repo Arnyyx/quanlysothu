@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ViewNCC extends JFrame {
 
-    private JButton  addButton, updateButton, deleteButton, searchButton, importButton;
+    private JButton addButton, updateButton, deleteButton, searchButton, importButton;
     private JLabel searchLable, idLabel, nameLabel, foodTypeLabel, locationLabel;
     private JTextField searchField, idField, nameField, foodTypeField, locationField;
     private JTable table;
@@ -36,7 +36,7 @@ public class ViewNCC extends JFrame {
 
     public ViewNCC() {
         new Menu(this);
-         setSize(1000, 700);
+        setSize(1000, 700);
         setTitle("Supplier Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         searchField = new JTextField(20);
@@ -57,9 +57,9 @@ public class ViewNCC extends JFrame {
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
         searchButton = new JButton("Search");
-      
+
         importButton = new JButton("Import");
-    
+
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         searchPanel.add(searchLable);
@@ -81,9 +81,7 @@ public class ViewNCC extends JFrame {
         buttonPanel.add(deleteButton);
 
         buttonPanel.add(importButton);
-      
-        
-        
+
         JLabel titleLabel = new JLabel("Supplier Management System");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);

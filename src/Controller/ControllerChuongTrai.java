@@ -210,7 +210,11 @@ public class ControllerChuongTrai {
             float area = Float.parseFloat(view.getTfArea().getText());
             int quantityCurrent = Integer.parseInt(view.getTfQuantityCurrent().getText());
             int quantity = Integer.parseInt(view.getTfQuantity().getText());
-            ModelChuongTrai habitat = new ModelChuongTrai(name, state, area, quantityCurrent, quantity, "1");
+            String anh = "";
+            if (fileImg != null) {
+                anh = fileImg.getName();
+            }
+            ModelChuongTrai habitat = new ModelChuongTrai(name, state, area, quantityCurrent, quantity, anh);
 
             PostHabitat(habitat);
             SaveFileImg();

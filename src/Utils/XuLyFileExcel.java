@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class XuLyFileExcel {
 
     public void xuatExcel(JTable tbl) {
+        
         try {
             TableModel dtm = tbl.getModel();
 

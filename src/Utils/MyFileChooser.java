@@ -1,5 +1,6 @@
 package Utils;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import javax.swing.filechooser.FileView;
 import java.awt.*;
@@ -36,10 +37,12 @@ public class MyFileChooser extends JFileChooser {
 
     public MyFileChooser() {
         super();
+        FlatLightLaf.setup();
     }
 
     public MyFileChooser(String src) {
         super(src);
+        FlatLightLaf.setup();
     }
 
     // --- Override the other constructors as needed ---

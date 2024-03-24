@@ -23,21 +23,8 @@ import javax.swing.table.TableColumnModel;
  */
 public class Utility {
 
-    public static String apiString = "https://quan-ly-tu.onrender.com/";
-//    public static String apiString = "http://localhost:8000/";
-
-    public static void changLNF(String nameLNF) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if (nameLNF.equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            System.out.println("Utils.Utility.changLNF()" + ex);
-        }
-    }
+//    public static String apiString = "https://quan-ly-tu.onrender.com/";
+    public static String apiString = "http://localhost:8000/";
 
     public static Font getFont() {
         return UIManager.getFont("large.font");
