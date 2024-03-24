@@ -83,7 +83,7 @@ public class ViewChuongTrai extends JFrame {
 
     public ViewChuongTrai() {
         setTitle("Quản lý động vật");
-         setSize(1000, 700);
+        setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         new Menu(this);

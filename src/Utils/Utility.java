@@ -23,8 +23,8 @@ import javax.swing.table.TableColumnModel;
  */
 public class Utility {
 
-//    public static String apiString = "https://quan-ly-tu.onrender.com/";
-    public static String apiString = "http://localhost:8000/";
+    public static String apiString = "https://quan-ly-tu.onrender.com/";
+//    public static String apiString = "http://localhost:8000/";
 
     public static void changLNF(String nameLNF) {
         try {

@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.UIManager;
 import Utils.XuLyFileExcel;
 import View.ViewChuongTrai;
@@ -44,15 +42,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class ControllerChuongTrai {
 
     ViewChuongTrai view;
-    ModelChuongTrai model;
     private File fileImg = null;
-
-    Connection connection;
+    String apiString = Utils.Utility.apiString + "habitat/";
 
     public ArrayList<ModelChuongTrai> getListHabitat() {
         ArrayList<ModelChuongTrai> habitatArrayList = new ArrayList<>();
         try {
-            URL url = new URL("http://localhost:8000/habitat/");
+            URL url = new URL(apiString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
@@ -162,7 +158,7 @@ public class ControllerChuongTrai {
             public void mousePressed(MouseEvent e) {
                 int index = view.getTable().getSelectedRow();
                 try {
-                    URL url = new URL("http://localhost:8000/habitat/" + view.getTable().getValueAt(index, 0));
+                    URL url = new URL(apiString + view.getTable().getValueAt(index, 0));
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
 
@@ -242,7 +238,7 @@ public class ControllerChuongTrai {
             String jsonInputString = gson.toJson(habitat);
 
             try {
-                URL url = new URL("http://localhost:8000/habitat/" + id);
+                URL url = new URL(apiString + id);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Content-Type", "application/json");
@@ -323,7 +319,7 @@ public class ControllerChuongTrai {
 
     private void PostHabitat(ModelChuongTrai habitat) {
         try {
-            URL url = new URL("http://localhost:8000/habitat/");
+            URL url = new URL(apiString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
@@ -348,7 +344,7 @@ public class ControllerChuongTrai {
         try {
             ModelChuongTrai habitat = new ModelChuongTrai();
             habitat.setId(id);
-            URL url = new URL("http://localhost:8000/habitat/" + id);
+            URL url = new URL(apiString + id);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-Type", "application/json");
