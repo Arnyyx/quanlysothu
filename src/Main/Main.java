@@ -7,13 +7,10 @@ package Main;
 import Controller.ControllerDongVat;
 import View.ViewDongVat;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import raven.swing.spinner.SpinnerProgress;
 
 /**
  *
@@ -34,7 +31,6 @@ public class Main {
 
     public static boolean isApiAvailable(String apiUrl) {
         try {
-//            JOptionPane.showMessageDialog(null, "Đang tải");
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("HEAD");

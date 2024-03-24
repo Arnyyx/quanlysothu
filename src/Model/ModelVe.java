@@ -15,6 +15,8 @@ public class ModelVe {
 
     public ModelVe() {
     }
+    
+    
 
     public ModelVe(int IDNhanVien, String TenVe, String LoaiVe, int GiaVe, int SoLuong) {
         this.IDNhanVien = IDNhanVien;

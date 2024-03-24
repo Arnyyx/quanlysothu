@@ -153,6 +153,36 @@ public class ControllerDongVat {
             return;
         }
 
+        getListDongVat(new OnGetListDongVatListener() {
+            @Override
+            public void onSuccess(ArrayList<ModelDongVat> dongVats) {
+
+                for (ModelDongVat dongVat : dongVats) {
+                    try {
+                        String apiUrl = apiString + dongVat.getIDDongVat();
+                        URL url = new URL(apiUrl);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("DELETE");
+
+                        connection.getResponseCode();
+
+                        fillData(view.getTfTimKiem().getText());
+                        connection.disconnect();
+                    } catch (IOException ex) {
+                        System.out.println("Controller.ControllerDongVat.xoaDongVat() " + ex);
+                    }
+                }
+            }
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onFailure() {
+            }
+        });
+
         JTable table = view.getTable();
         new XuLyFileExcel().nhapExcel(table);
 
@@ -217,7 +247,6 @@ public class ControllerDongVat {
                 } catch (IOException ex) {
                     System.out.println("Controller.ControllerDongVat.xoaDongVat() " + ex);
                 }
-
             }
         }
         reset();
@@ -270,22 +299,15 @@ public class ControllerDongVat {
         reset();
     }
 
-    public ImageIcon getAnhDongVat(String src) {
-//        src = src.trim().equals("") ? "image/DongVat/default.jpg" : src;
-        //Xử lý ảnh
+    public ImageIcon getAnhDongVat(String src) {// 
         BufferedImage img = null;
         File fileImg = new File(src);
 
-//        if (!fileImg.exists()) {
-//            src = "default.jpg";
-//            fileImg = new File("image/DongVat/" + src);
-//        }
         try {
             img = ImageIO.read(fileImg);
             fileAnhDongVat = new File(src);
         } catch (IOException e) {
-//            System.out.println("Loi khong co anh: " + e);
-//            fileAnhDongVat = new File("image/DongVat/default.jpg");
+
         }
 
         if (img != null) {
@@ -501,6 +523,7 @@ public class ControllerDongVat {
     public void getListDongVat(final OnGetListDongVatListener listener) {
         try {
             listener.onStart();
+
             String apiUrl = apiString;
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
