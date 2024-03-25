@@ -3,6 +3,8 @@ package View;
 import Controller.ControllerChuongTrai;
 import Controller.ControllerDongVat;
 import Controller.ControllerNCC;
+import Controller.ControllerNhanVien;
+import Controller.ControllerTaiKhoan;
 import Controller.ControllerThongKeDongVat;
 import Controller.ControllerVe;
 import Controller.Controllerthucan;
@@ -24,12 +26,16 @@ public class Menu {
 
         // Tạo menu
         JMenu quanLy = new JMenu("Quản lý");
+        JMenuItem quanLyTaiKhoan = new JMenuItem("Quản lý tài khoản");
+        JMenuItem quanLyNhanVien = new JMenuItem("Quản lý nhân viên");
         JMenuItem quanLyDongVat = new JMenuItem("Quản lý động vật");
         JMenuItem quanLyVe = new JMenuItem("Quản lý vé");
         JMenuItem quanLyChuongTrai = new JMenuItem("Quản lý chuồng trại");
         JMenuItem quanLyThucAn = new JMenuItem("Quản lý thức ăn");
         JMenuItem quanLyNCC = new JMenuItem("Quản lý nhà cung cấp");
 
+        quanLy.add(quanLyTaiKhoan);
+        quanLy.add(quanLyNhanVien);
         quanLy.add(quanLyDongVat);
         quanLy.add(quanLyVe);
         quanLy.add(quanLyChuongTrai);
@@ -42,30 +48,40 @@ public class Menu {
         menuBar.add(thongKe);
         thongKe.add(thongKeDongVat);
 
+        quanLyTaiKhoan.addActionListener((e) -> {
+            frame.dispose();
+            ViewTaiKhoan v = new ViewTaiKhoan();
+            new ControllerTaiKhoan(v);
+        });
+        quanLyNhanVien.addActionListener((e) -> {
+            frame.dispose();
+            ViewNhanVien v = new ViewNhanVien();
+            new ControllerNhanVien(v);
+        });
         quanLyDongVat.addActionListener((e) -> {
             frame.dispose();
             ViewDongVat v = new ViewDongVat();
-            ControllerDongVat c = new ControllerDongVat(v);
+            new ControllerDongVat(v);
         });
         quanLyVe.addActionListener((e) -> {
             frame.dispose();
             ViewVe v = new ViewVe();
-            ControllerVe c = new ControllerVe(v);
+            new ControllerVe(v);
         });
         quanLyChuongTrai.addActionListener((e) -> {
             frame.dispose();
             ViewChuongTrai v = new ViewChuongTrai();
-            ControllerChuongTrai c = new ControllerChuongTrai(v);
+            new ControllerChuongTrai(v);
         });
         quanLyThucAn.addActionListener((e) -> {
             frame.dispose();
             ViewThucAn view = new ViewThucAn();
-            Controllerthucan control = new Controllerthucan(view);
+            new Controllerthucan(view);
         });
         quanLyNCC.addActionListener((e) -> {
             frame.dispose();
             ViewNCC view = new ViewNCC();
-            ControllerNCC control = new ControllerNCC(view);
+            new ControllerNCC(view);
         });
 
         thongKeDongVat.addActionListener((e) -> {
@@ -74,6 +90,8 @@ public class Menu {
         });
 
         quanLy.setFont(font);
+        quanLyTaiKhoan.setFont(font);
+        quanLyNhanVien.setFont(font);
         quanLyDongVat.setFont(font);
         quanLyVe.setFont(font);
         quanLyChuongTrai.setFont(font);

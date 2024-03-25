@@ -191,12 +191,4 @@ public class ViewThucAn extends JFrame {
         return searchField;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ViewThucAn();
-            }
-        });
-    }
 }

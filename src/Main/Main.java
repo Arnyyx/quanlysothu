@@ -5,6 +5,7 @@
 package Main;
 
 import Controller.ControllerDongVat;
+import View.ViewDangNhap;
 import View.ViewDongVat;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.io.IOException;
@@ -24,8 +25,9 @@ public class Main {
         if (!isApiAvailable(Utils.Utility.apiString)) {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
         } else {
-            ViewDongVat v = new ViewDongVat();
-            ControllerDongVat c = new ControllerDongVat(v);
+            new ViewDangNhap();
+//            ViewDongVat v = new ViewDongVat();
+//            ControllerDongVat c = new ControllerDongVat(v);
         }
     }
 
