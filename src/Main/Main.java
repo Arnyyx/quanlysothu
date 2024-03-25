@@ -26,8 +26,6 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
         } else {
             new ViewDangNhap();
-//            ViewDongVat v = new ViewDongVat();
-//            ControllerDongVat c = new ControllerDongVat(v);
         }
     }
 

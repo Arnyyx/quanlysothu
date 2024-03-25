@@ -5,6 +5,7 @@
 package View;
 
 import Controller.ControllerDangNhap;
+import Controller.ControllerDongVat;
 import Controller.ControllerNhanVien;
 import Model.ModelTaiKhoan;
 
@@ -13,14 +14,15 @@ import Model.ModelTaiKhoan;
  * @author datbe
  */
 public class ViewDangNhap extends javax.swing.JFrame {
-    
+
     private void xuLyDangNhap() {
         ControllerDangNhap controllerDangNhap = new ControllerDangNhap();
         ModelTaiKhoan tk = controllerDangNhap.getTaiKhoanDangNhap(txtTaiKhoan.getText(), txtMatKhau.getText());
         if (tk != null) {
             this.dispose();
-            ViewNhanVien v = new ViewNhanVien();
-            new ControllerNhanVien(v);
+            Menu.quyen = tk.getQuyen();
+            ViewDongVat v = new ViewDongVat();
+            new ControllerDongVat(v);
         }
     }
 

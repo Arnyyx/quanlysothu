@@ -18,8 +18,9 @@ import javax.swing.JMenuItem;
 
 public class Menu {
 
+    public static String quyen = null;
+
     public Menu(JFrame frame) {
-        // Tạo menu bar
         Font font = Utils.Utility.getFont();
 
         JMenuBar menuBar = new JMenuBar();
@@ -36,8 +37,11 @@ public class Menu {
         JMenuItem quanLyNCC = new JMenuItem("Quản lý nhà cung cấp");
         JMenuItem dangXuat = new JMenuItem("Đăng xuất");
 
-        quanLy.add(quanLyTaiKhoan);
-        quanLy.add(quanLyNhanVien);
+        if (quyen.equals("QL")) {
+            quanLy.add(quanLyTaiKhoan);
+            quanLy.add(quanLyNhanVien);
+        }
+
         quanLy.add(quanLyDongVat);
         quanLy.add(quanLyVe);
         quanLy.add(quanLyChuongTrai);
