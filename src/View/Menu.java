@@ -8,6 +8,7 @@ import Controller.ControllerTaiKhoan;
 import Controller.ControllerThongKeDongVat;
 import Controller.ControllerVe;
 import Controller.Controllerthucan;
+import Main.Main;
 import java.awt.Font;
 
 import javax.swing.JFrame;
@@ -33,6 +34,7 @@ public class Menu {
         JMenuItem quanLyChuongTrai = new JMenuItem("Quản lý chuồng trại");
         JMenuItem quanLyThucAn = new JMenuItem("Quản lý thức ăn");
         JMenuItem quanLyNCC = new JMenuItem("Quản lý nhà cung cấp");
+        JMenuItem dangXuat = new JMenuItem("Đăng xuất");
 
         quanLy.add(quanLyTaiKhoan);
         quanLy.add(quanLyNhanVien);
@@ -41,6 +43,7 @@ public class Menu {
         quanLy.add(quanLyChuongTrai);
         quanLy.add(quanLyThucAn);
         quanLy.add(quanLyNCC);
+        quanLy.add(dangXuat);
         menuBar.add(quanLy);
 
         JMenu thongKe = new JMenu("Thống kê");
@@ -83,6 +86,10 @@ public class Menu {
             ViewNCC view = new ViewNCC();
             new ControllerNCC(view);
         });
+        dangXuat.addActionListener((e) -> {
+            frame.dispose();
+            new ViewDangNhap();
+        });
 
         thongKeDongVat.addActionListener((e) -> {
             frame.dispose();
@@ -97,6 +104,7 @@ public class Menu {
         quanLyChuongTrai.setFont(font);
         quanLyThucAn.setFont(font);
         quanLyNCC.setFont(font);
+        dangXuat.setFont(font);
 
         thongKe.setFont(font);
         thongKeDongVat.setFont(font);
