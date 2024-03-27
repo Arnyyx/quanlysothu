@@ -129,7 +129,7 @@ public class Controllerthucan {
     public Connection getcon() {
         String url = "jdbc:mysql://localhost:3306/quanlysothu";
         String user = "root";
-        String password = "123456";
+        String password = "";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
