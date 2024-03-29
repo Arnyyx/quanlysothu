@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -31,7 +32,7 @@ public class ModelChamSoc {
 
     @Override
     public String toString() {
-        return (IDChamSoc + TenDongVat + LoaiChamSoc + NgayChamSoc + TenNhanVien + KetQua).toLowerCase();
+        return (IDChamSoc + TenDongVat + LoaiChamSoc + Utils.Utility.sdf.format(NgayChamSoc) + TenNhanVien + KetQua).toLowerCase();
     }
 
     public int getIDChamSoc() {

@@ -41,7 +41,7 @@ public class ControllerChamSoc {
     private ViewChamSoc view;
     private ModelChamSoc chamsoc = new ModelChamSoc();
     String apiString = Utils.Utility.apiString + "chamsoc/";
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    SimpleDateFormat sdf = Utils.Utility.sdf;
 
     public ControllerChamSoc() {
     }
@@ -73,9 +73,13 @@ public class ControllerChamSoc {
         });
 
         view.getBtnSave().addActionListener((e) -> {
+            if (view.getTfID().getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Hãy chọn một bản ghi");
+                return;
+            }
             luuChamSoc();
         });
-        view.getBtnSave().addActionListener((e) -> {
+        view.getBtnSearch().addActionListener((e) -> {
             timKiemChamSoc();
         });
         view.getBtnXuat().addActionListener((e) -> {
@@ -106,7 +110,6 @@ public class ControllerChamSoc {
                             view.getTfID().setText(chamSoc.getIDChamSoc() + "");
                             view.getTfTenDongVat().setSelectedItem(chamSoc.getTenDongVat());
                             view.getTfLoaiChamSoc().setSelectedItem(chamSoc.getLoaiChamSoc());
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                             view.getTfNgayChamSoc().setDate(chamSoc.getNgayChamSoc());
                             view.getTfTenNhanVien().setText(chamSoc.getTenNhanVien());
                             view.getTfKetQua().setText(chamSoc.getKetQua());
@@ -331,6 +334,7 @@ public class ControllerChamSoc {
         ControllerDongVat controllerDongVat = new ControllerDongVat();
 
         view.getTfTenDongVat().removeAllItems();
+        view.getTfLoaiChamSoc().removeAllItems();
 
         tableModel.setRowCount(0);
 

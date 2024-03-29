@@ -67,10 +67,12 @@ public class ViewChamSoc extends JFrame {
 
         table.getTableHeader().setReorderingAllowed(false);
         tfID.setEditable(false);
+        tfLoaiChamSoc.setEditable(true);
         tfNgayChamSoc.setDateFormatString("dd/MM/yyyy");
         tfNgayChamSoc.setMaxSelectableDate(Date.from(Instant.now()));
         JTextFieldDateEditor editor = (JTextFieldDateEditor) tfNgayChamSoc.getDateEditor();
         editor.setEditable(false);
+        table.setAutoCreateRowSorter(true);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -122,13 +124,13 @@ public class ViewChamSoc extends JFrame {
         buttonPanelSouth.add(btnAdd);
         buttonPanelSouth.add(btnDelete);
         buttonPanelSouth.add(btnSave);
-        buttonPanelSouth.add(btnSearch);
-        buttonPanelSouth.add(tfTimKiem);
+        buttonPanelSouth.add(btnNhap);
+        buttonPanelSouth.add(btnXuat);
 
         JPanel buttonPanelNorth = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanelNorth.add(btnLoad);
-        buttonPanelNorth.add(btnNhap);
-        buttonPanelNorth.add(btnXuat);
+        buttonPanelNorth.add(btnSearch);
+        buttonPanelNorth.add(tfTimKiem);
 
         // Thêm các panel vào split pane
         splitPane.setLeftComponent(tablePanel);

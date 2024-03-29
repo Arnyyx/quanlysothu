@@ -87,6 +87,7 @@ public class ViewDongVat extends JFrame {
         tfID.setEditable(false);
         tfLoai.setEditable(true);
         ((AbstractDocument) tfTuoi.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
+        table.setAutoCreateRowSorter(true);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -154,22 +155,22 @@ public class ViewDongVat extends JFrame {
         inputPanel.add(btnImageChange, gbc);
 
         JPanel buttonPanelSouth = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanelSouth.add(labelSLDongVat);
         buttonPanelSouth.add(btnAdd);
         buttonPanelSouth.add(btnDelete);
         buttonPanelSouth.add(btnSave);
-        buttonPanelSouth.add(btnSearch);
-        buttonPanelSouth.add(tfTimKiem);
+        buttonPanelSouth.add(btnNhap);
+        buttonPanelSouth.add(btnXuat);
 
         JPanel buttonPanelNorth = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanelNorth.add(labelSLDongVat);
         buttonPanelNorth.add(btnLoad);
-        buttonPanelNorth.add(btnNhap);
-        buttonPanelNorth.add(btnXuat);
+        buttonPanelNorth.add(btnSearch);
+        buttonPanelNorth.add(tfTimKiem);
 
         // Thêm các panel vào split pane
         splitPane.setLeftComponent(tablePanel);
         splitPane.setRightComponent(inputPanel);
-        splitPane.setResizeWeight(0.6);
+        splitPane.setResizeWeight(0.8);
 
         // Sắp xếp split pane
         add(buttonPanelNorth, BorderLayout.NORTH);
@@ -177,7 +178,6 @@ public class ViewDongVat extends JFrame {
         add(buttonPanelSouth, BorderLayout.SOUTH);
 
 //         Font chữ
-//        Font font = new Font("Arial", Font.PLAIN, 14);
         Font font = UIManager.getFont("large.font");
         label.setFont(new Font("Arial", Font.BOLD, 20));
         lbID.setFont(font);
@@ -196,6 +196,7 @@ public class ViewDongVat extends JFrame {
         tfGioiTinh.setFont(font);
         tfTrangThai.setFont(font);
         tfTimKiem.setFont(font);
+
         btnAdd.setFont(font);
         btnDelete.setFont(font);
         btnSave.setFont(font);

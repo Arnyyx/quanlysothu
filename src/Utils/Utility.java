@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.awt.Component;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -27,6 +28,8 @@ public class Utility {
 
 //    public static String apiString = "https://quan-ly-tu.onrender.com/";
     public static String apiString = "http://localhost:8000/";
+
+    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public static Font getFont() {
         return UIManager.getFont("large.font");

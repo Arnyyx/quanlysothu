@@ -68,10 +68,11 @@ public class ControllerDongVat {
                 return;
             }
             int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn thêm động vật mới? ", "Thêm động vật mới?", JOptionPane.WARNING_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                themDongVat(dongVat);
+            if (dialogResult != JOptionPane.YES_OPTION) {
+                return;
             }
 
+            themDongVat(dongVat);
             luuFileAnh();
             fillData(view.getTfTimKiem().getText());
             reset();
@@ -87,6 +88,10 @@ public class ControllerDongVat {
             themAnhDongVat();
         });
         view.getBtnSave().addActionListener((e) -> {
+            if (view.getTfID().getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Hãy chọn một loài động vật");
+                return;
+            }
             if (!dongVat.getTenDongVat().equals(getDongVatFromTextField().getTenDongVat())) {
                 JOptionPane.showMessageDialog(null, "Động vật đã tồn tại");
                 return;
@@ -254,8 +259,8 @@ public class ControllerDongVat {
                     System.out.println("Controller.ControllerDongVat.xoaDongVat() " + ex);
                 }
             }
+            reset();
         }
-        reset();
     }
 
     public void luuDongVat() {
@@ -292,12 +297,12 @@ public class ControllerDongVat {
                 dongVat.setHinhAnhDongVat(fileAnhDongVat.getName());
                 luuFileAnh();
                 view.getLbAnhDongVat().setIcon(getAnhDongVat("image/DongVat/" + fileAnhDongVat.getName()));
+                fileAnhDongVat = null;
                 connection.disconnect();
             }
         } catch (HeadlessException | IOException | NumberFormatException ex) {
             System.out.println("controller/SaveButtonListener" + ex);
         }
-        fileAnhDongVat = null;
     }
 
     public void timKiemDongVat() {
@@ -331,7 +336,6 @@ public class ControllerDongVat {
             view.getTfLoai().setSelectedItem("");
             IntegerDocumentFilter.clearTextField(view.getTfTuoi());
             view.getTfGioiTinh().setSelectedItem("");
-            view.getTfTrangThai().setSelectedItem("Khoẻ mạnh");
 
             fileAnhDongVat = null;
             view.getLbAnhDongVat().setIcon(getAnhDongVat(""));
@@ -466,7 +470,6 @@ public class ControllerDongVat {
             public void onFailure() {
             }
         });
-
     }
 
     public void themDongVat(ModelDongVat dongVat) {
