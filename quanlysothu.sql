@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 25, 2024 lúc 08:21 AM
+-- Thời gian đã tạo: Th3 29, 2024 lúc 02:34 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -42,10 +42,14 @@ CREATE TABLE `habitatmanager` (
 --
 
 INSERT INTO `habitatmanager` (`ID`, `Name`, `State`, `Area`, `QuantityCurrent`, `Quantity`, `Img`) VALUES
-(11, 'ga', 'good', 2, 2, 2, '1'),
-(13, 'Cao', 'Super good', 25, 3, 5, 'boy.png'),
-(15, 'Bo', 'bad', 3, 3, 3, 'boy.png'),
-(20, '1', '1', 1, 1, 1, 'boy.png');
+(15, 'Hổ', 'bad', 3, 3, 3, ''),
+(23, '1', 'Normal', 1, 1, 1, 'anh-dep-cute-002-1.jpg'),
+(24, 'Soi', 'bad', 24, 5, 10, 'boy.png'),
+(25, 'Ho', 'bad', 24, 5, 10, 'boy.png'),
+(26, 'Hooo', 'Super good', 24, 5, 10, 'home.png'),
+(28, 'Doi', 'bad', 24, 5, 10, 'boy.png'),
+(29, 'rong', 'Super good', 24, 5, 10, 'home.png'),
+(30, 'miu miu', 'Super good', 24, 5, 6, 'anh-dep-cute-002-1.jpg');
 
 -- --------------------------------------------------------
 
@@ -122,12 +126,43 @@ INSERT INTO `nhanvien` (`ID`, `TenNV`, `MaNV`, `ChucVu`, `GioiTinh`, `NgaySinh`,
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `tablechamsocdongvat`
+--
+
+CREATE TABLE `tablechamsocdongvat` (
+  `IDChamSoc` int(11) NOT NULL,
+  `TenDongVat` varchar(255) NOT NULL,
+  `LoaiChamSoc` varchar(255) NOT NULL,
+  `NgayChamSoc` datetime NOT NULL,
+  `TenNhanVien` varchar(255) NOT NULL,
+  `KetQua` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tablechamsocsuckhoe`
+--
+
+CREATE TABLE `tablechamsocsuckhoe` (
+  `IDChamSoc` int(11) NOT NULL,
+  `TenDongVat` varchar(255) NOT NULL,
+  `LoaiChamSoc` varchar(255) NOT NULL,
+  `NgayChamSoc` date NOT NULL,
+  `TenNhanVien` varchar(255) NOT NULL,
+  `KetQua` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `tabledongvat`
 --
 
 CREATE TABLE `tabledongvat` (
   `IDDongVat` int(11) NOT NULL,
   `TenDongVat` varchar(255) NOT NULL,
+  `TenChuong` varchar(255) DEFAULT NULL,
   `LoaiDongVat` varchar(255) NOT NULL,
   `TuoiDongVat` int(3) NOT NULL,
   `GioiTinhDongVat` varchar(255) NOT NULL,
@@ -139,27 +174,11 @@ CREATE TABLE `tabledongvat` (
 -- Đang đổ dữ liệu cho bảng `tabledongvat`
 --
 
-INSERT INTO `tabledongvat` (`IDDongVat`, `TenDongVat`, `LoaiDongVat`, `TuoiDongVat`, `GioiTinhDongVat`, `TrangThaiDongVat`, `HinhAnhDongVat`) VALUES
-(27, 'Arnycute', 'Hổ', 21, 'Nam', 'Khoẻ mạnh', 'ho.jpg'),
-(28, 'Ajuma', 'Khỉ đột', 24, 'Cái', 'Bị bệnh', 'khidot.jpg'),
-(29, 'Anala', 'Voi Châu Phi', 6, 'Cái', 'Khoẻ mạnh', 'voi.jpg'),
-(30, 'Aurora', 'Huơu cao cổ', 4, 'Cái', 'Khoẻ mạnh', 'huoucaoco.jpg'),
-(31, 'Bertie', 'Gấu bắc cực', 22, 'Đực', 'Khoẻ mạnh', 'gaubaccuc.jpg'),
-(32, 'Billy', 'Vượn cáo', 17, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(33, 'Bob', 'Gấu trúc', 8, 'Đực', 'Khoẻ mạnh', 'gautruc.jpg'),
-(34, 'Carlos', 'Báo đốm', 10, 'Đực', 'Bị thương', 'baodom.jpg'),
-(35, 'Ellie', 'Ngựa vằn', 5, 'Cái', 'Khoẻ mạnh', 'nguavan.jpg'),
-(36, 'Fiona', 'Hà mã', 8, 'Cái', 'Khoẻ mạnh', 'hama.jpg'),
-(37, 'Grace', 'Khỉ', 13, 'Cái', 'Khoẻ mạnh', 'khi.jpg'),
-(38, 'Harry', 'Sư tử', 10, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
-(39, 'Jasper', 'Báo đốm', 6, 'Đực', 'Bị bệnh', 'baodom.jpg'),
-(40, 'Luna', 'Hổ', 5, 'Cái', 'Mang thai', 'ho.jpg'),
-(41, 'Milo', 'Koala', 7, 'Đực', 'Khoẻ mạnh', 'koala.jpg'),
-(42, 'Penny', 'Khỉ', 17, 'Cái', 'Khoẻ mạnh', 'khi.jpg'),
-(43, 'DucAnh', 'Lợn', 21, 'Đực', 'Khoẻ mạnh', 'lonhong.jpg'),
-(44, 'Chi', 'Sư tử', 21, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
-(45, 'Duong', 'Cáo', 21, 'Đực', 'Mang thai', 'vuoncao.jpg'),
-(46, 'Dat', 'Bò', 21, 'Đực', 'Khoẻ mạnh', 'bo.JPG');
+INSERT INTO `tabledongvat` (`IDDongVat`, `TenDongVat`, `TenChuong`, `LoaiDongVat`, `TuoiDongVat`, `GioiTinhDongVat`, `TrangThaiDongVat`, `HinhAnhDongVat`) VALUES
+(153, 'Simba', 'Hổ', 'Sư tử', 5, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
+(154, 'Nala', 'Hổ', 'Sư tử', 4, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
+(155, 'Kiara', 'Hổ', 'Sư tử', 1, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
+(156, 'Timon', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg');
 
 -- --------------------------------------------------------
 
@@ -185,8 +204,7 @@ INSERT INTO `taikhoan` (`ID`, `MaNV`, `TaiKhoan`, `MatKhau`, `Quyen`) VALUES
 (3, 'NV02', 'Duong', '1', 'NV'),
 (4, 'NV03', 'Chi', '1', 'NV'),
 (5, 'NV04', 'datngocc', '1', 'NV'),
-(22, 'QL02', '1', '1', 'QL'),
-(24, 'NV01', '2', '2', 'NV');
+(22, 'QL02', '1', '1', 'QL');
 
 -- --------------------------------------------------------
 
@@ -210,11 +228,10 @@ CREATE TABLE `thucan` (
 
 INSERT INTO `thucan` (`IDThucAN`, `TenThucAn`, `LoaiThucAn`, `IdNCC`, `IdDongVat`, `SoLuong`, `HanThucAn`) VALUES
 (8, 'Cám', 'Đồ khô', 1, 1, 199, '2027'),
-(10, 'Thịt Gà', 'Đồ Sống', 2, 2, 100, '2027'),
 (11, 'Chuối', 'Hoa quả', 3, 2, 100, '2027'),
 (12, 'Dâu Tây', 'Hoa Quả', 4, 5, 3344, '2025'),
 (13, 'Cam', 'Hoa Quả', 5, 2, 333, '2025'),
-(14, 'Nho', 'Hoa quả', 6, 4, 444, '2026'),
+(14, 'Nhooo', 'Hoa quả', 6, 4, 444, '2026'),
 (15, 'Quýt', 'Hoa quả', 7, 6, 555, '2026'),
 (16, 'dưa chuột', 'hoa quả', 7, 5, 5, '2034'),
 (17, 'Cà rốt', 'Rau củ', 9, 6, 55, '2026'),
@@ -250,11 +267,12 @@ CREATE TABLE `vethamquan` (
 --
 
 INSERT INTO `vethamquan` (`IdVe`, `IDNhanVien`, `TenVe`, `LoaiVe`, `GiaVe`, `SoLuong`) VALUES
-(15, 1, '1', '1', 1, 1),
+(15, 1, '134567', 'Người lớn', 1, 1),
 (16, 6, '3', 'Người lớn', 33, 3),
 (17, 2, '2', 'Người lớn', 2, 2),
 (18, 1, '1', 'Người lớn', 1, 1),
-(19, 1, '2', 'Người lớn', 3, 4);
+(19, 1, '2', 'Người lớn', 3, 4),
+(20, 1, '1', 'Người lớn', 1, 1);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -264,7 +282,8 @@ INSERT INTO `vethamquan` (`IdVe`, `IDNhanVien`, `TenVe`, `LoaiVe`, `GiaVe`, `SoL
 -- Chỉ mục cho bảng `habitatmanager`
 --
 ALTER TABLE `habitatmanager`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Name` (`Name`);
 
 --
 -- Chỉ mục cho bảng `ncc`
@@ -280,10 +299,25 @@ ALTER TABLE `nhanvien`
   ADD KEY `MaNV` (`MaNV`);
 
 --
+-- Chỉ mục cho bảng `tablechamsocdongvat`
+--
+ALTER TABLE `tablechamsocdongvat`
+  ADD PRIMARY KEY (`IDChamSoc`);
+
+--
+-- Chỉ mục cho bảng `tablechamsocsuckhoe`
+--
+ALTER TABLE `tablechamsocsuckhoe`
+  ADD PRIMARY KEY (`IDChamSoc`),
+  ADD KEY `TenDongVat` (`TenDongVat`);
+
+--
 -- Chỉ mục cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  ADD PRIMARY KEY (`IDDongVat`);
+  ADD PRIMARY KEY (`IDDongVat`),
+  ADD KEY `TenChuong` (`TenChuong`),
+  ADD KEY `TenDongVat` (`TenDongVat`);
 
 --
 -- Chỉ mục cho bảng `taikhoan`
@@ -315,7 +349,7 @@ ALTER TABLE `vethamquan`
 -- AUTO_INCREMENT cho bảng `habitatmanager`
 --
 ALTER TABLE `habitatmanager`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `ncc`
@@ -330,16 +364,28 @@ ALTER TABLE `nhanvien`
   MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
+-- AUTO_INCREMENT cho bảng `tablechamsocdongvat`
+--
+ALTER TABLE `tablechamsocdongvat`
+  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `tablechamsocsuckhoe`
+--
+ALTER TABLE `tablechamsocsuckhoe`
+  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
 -- AUTO_INCREMENT cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
 
 --
 -- AUTO_INCREMENT cho bảng `taikhoan`
 --
 ALTER TABLE `taikhoan`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT cho bảng `thucan`
@@ -351,11 +397,23 @@ ALTER TABLE `thucan`
 -- AUTO_INCREMENT cho bảng `vethamquan`
 --
 ALTER TABLE `vethamquan`
-  MODIFY `IdVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `IdVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
 --
+
+--
+-- Các ràng buộc cho bảng `tablechamsocsuckhoe`
+--
+ALTER TABLE `tablechamsocsuckhoe`
+  ADD CONSTRAINT `tablechamsocsuckhoe_ibfk_1` FOREIGN KEY (`TenDongVat`) REFERENCES `tabledongvat` (`TenDongVat`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `tabledongvat`
+--
+ALTER TABLE `tabledongvat`
+  ADD CONSTRAINT `tabledongvat_ibfk_1` FOREIGN KEY (`TenChuong`) REFERENCES `habitatmanager` (`Name`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `taikhoan`
