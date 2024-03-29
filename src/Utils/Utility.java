@@ -10,10 +10,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.awt.Component;
 import java.awt.Font;
 import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -49,5 +51,4 @@ public class Utility {
         column.setPreferredWidth(0);
         column.setResizable(false);
     }
-
 }

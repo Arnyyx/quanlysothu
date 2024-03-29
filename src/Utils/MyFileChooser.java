@@ -37,12 +37,12 @@ public class MyFileChooser extends JFileChooser {
 
     public MyFileChooser() {
         super();
-        FlatLightLaf.setup();
+//        FlatLightLaf.setup();
     }
 
     public MyFileChooser(String src) {
         super(src);
-        FlatLightLaf.setup();
+//        FlatLightLaf.setup();
     }
 
     // --- Override the other constructors as needed ---

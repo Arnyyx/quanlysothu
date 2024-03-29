@@ -9,11 +9,11 @@ package Model;
  * @author Duong
  */
 public class ModelChuongTrai {
-    private String Name,Img,State;
-    private int ID,QuantityCurrent,Quantity;
+
+    private String Name, Img, State;
+    private int ID, QuantityCurrent, Quantity;
     private float Area;
 
-    
     public ModelChuongTrai() {
     }
 
@@ -28,9 +28,8 @@ public class ModelChuongTrai {
 
     @Override
     public String toString() {
-        return Name+ID+State+Area+Quantity;
+        return (Name + ID + State + Area + Quantity).toLowerCase();
     }
-    
 
     public String getName() {
         return Name;
@@ -88,6 +87,4 @@ public class ModelChuongTrai {
         this.Area = Area;
     }
 
-    
-    
 }

@@ -5,6 +5,7 @@
 package Main;
 
 import Controller.ControllerDongVat;
+import View.Menu;
 import View.ViewDangNhap;
 import View.ViewDongVat;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -26,6 +27,9 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
         } else {
             new ViewDangNhap();
+//            Menu.quyen = "QL";
+//            ViewDongVat v = new ViewDongVat();
+//            new ControllerDongVat(v);
         }
     }
 

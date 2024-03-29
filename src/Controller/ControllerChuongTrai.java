@@ -122,6 +122,8 @@ public class ControllerChuongTrai {
         Collections.sort(loaiList);
         Collections.sort(TrangThaiList);
 
+        Utils.Utility.hideColumn(table, 6);
+
         for (String loai : loaiList) {
             view.getTfName().addItem(loai);
         }
@@ -146,6 +148,7 @@ public class ControllerChuongTrai {
         nhapExcel();
         xuatExcel();
         AddImg();
+        BTNClear();
     }
 
     private void CLICKTABLE() {
@@ -218,6 +221,13 @@ public class ControllerChuongTrai {
 
             PostHabitat(habitat);
             SaveFileImg();
+            fillData("");
+            view.Clear();
+        });
+    }
+
+    private void BTNClear() {
+        view.getBtnLoad().addActionListener((e) -> {
             fillData("");
             view.Clear();
         });

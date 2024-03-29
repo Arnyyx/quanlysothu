@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import Model.ModelChuongTrai;
 import Model.ModelDongVat;
 import Utils.IntegerDocumentFilter;
 import Utils.MyFileChooser;
@@ -48,6 +49,7 @@ public class ControllerDongVat {
     private ModelDongVat dongVat = new ModelDongVat();
     private File fileAnhDongVat = null;
     String apiString = Utils.Utility.apiString + "dongVat/";
+    boolean isDuplicate = false;
 
     public ControllerDongVat() {
     }
@@ -59,6 +61,10 @@ public class ControllerDongVat {
         view.getBtnAdd().addActionListener((e) -> {
             dongVat = getDongVatFromTextField();
             if (dongVat == null) {
+                return;
+            }
+            if (isDuplicateTenDongVat(dongVat)) {
+                JOptionPane.showMessageDialog(null, "Động vật đã tồn tại");
                 return;
             }
             int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn thêm động vật mới? ", "Thêm động vật mới?", JOptionPane.WARNING_MESSAGE);
@@ -81,6 +87,10 @@ public class ControllerDongVat {
             themAnhDongVat();
         });
         view.getBtnSave().addActionListener((e) -> {
+            if (!dongVat.getTenDongVat().equals(getDongVatFromTextField().getTenDongVat())) {
+                JOptionPane.showMessageDialog(null, "Động vật đã tồn tại");
+                return;
+            }
             luuDongVat();
         });
         view.getBtnTimKiem().addActionListener((e) -> {
@@ -115,7 +125,7 @@ public class ControllerDongVat {
                             view.getTfTen().setText(dongVat.getTenDongVat());
                             view.getTfLoai().setSelectedItem(dongVat.getLoaiDongVat());
                             view.getTfTuoi().setText(dongVat.getTuoiDongVat() + "");
-                            view.getTfGioiTinh().setText(dongVat.getGioiTinhDongVat());
+                            view.getTfGioiTinh().setSelectedItem(dongVat.getGioiTinhDongVat());
                             view.getTfTrangThai().setSelectedItem(dongVat.getTrangThaiDongVat());
                             view.getLbAnhDongVat().setIcon(getAnhDongVat("image/DongVat/" + dongVat.getHinhAnhDongVat()));
                         }
@@ -189,24 +199,20 @@ public class ControllerDongVat {
         int row = view.getTable().getRowCount();
         for (int i = 0; i < row; i++) {
             String ten = table.getValueAt(i, 1).toString();
-            String loai = table.getValueAt(i, 2).toString();
-            int tuoi = Integer.parseInt(table.getValueAt(i, 3).toString());
-            String gioiTinh = table.getValueAt(i, 4).toString();
-            String trangThai = table.getValueAt(i, 5).toString();
-            String hinhAnh = table.getValueAt(i, 6).toString();
+            String tenChuong = table.getValueAt(i, 2).toString();
+            String loai = table.getValueAt(i, 3).toString();
+            int tuoi = Integer.parseInt(table.getValueAt(i, 4).toString());
+            String gioiTinh = table.getValueAt(i, 5).toString();
+            String trangThai = table.getValueAt(i, 6).toString();
+            String hinhAnh = table.getValueAt(i, 7).toString();
 
-            themDongVat(new ModelDongVat(ten, loai, tuoi, gioiTinh, trangThai, hinhAnh));
+            themDongVat(new ModelDongVat(ten, tenChuong, loai, tuoi, gioiTinh, trangThai, hinhAnh));
         }
         fillData(view.getTfTimKiem().getText());
         reset();
     }
 
     public void themAnhDongVat() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException ex) {
-            System.out.println("controller/ImageChangeButtonListener" + ex);
-        }
         JFileChooser fileChooser = new MyFileChooser("image/DongVat/");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Tệp hình ảnh", "jpg", "png", "jpeg");
@@ -261,7 +267,7 @@ public class ControllerDongVat {
 
             int id = Integer.parseInt(view.getTfID().getText());
 
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn sửa động vật có ID = " + id + "?", "Xoá động vật?", JOptionPane.WARNING_MESSAGE);
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn sửa động vật có ID = " + id + "?", "Sửa động vật?", JOptionPane.WARNING_MESSAGE);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 dongVat.setIDDongVat(id);
                 Gson gson = new Gson();
@@ -319,11 +325,12 @@ public class ControllerDongVat {
 
     public void reset() {
         try {
+            isDuplicate = false;
             view.getTfID().setText("");
             view.getTfTen().setText("");
             view.getTfLoai().setSelectedItem("");
             IntegerDocumentFilter.clearTextField(view.getTfTuoi());
-            view.getTfGioiTinh().setText("");
+            view.getTfGioiTinh().setSelectedItem("");
             view.getTfTrangThai().setSelectedItem("Khoẻ mạnh");
 
             fileAnhDongVat = null;
@@ -335,14 +342,18 @@ public class ControllerDongVat {
     }
 
     public ModelDongVat getDongVatFromTextField() {
+        String tenchuong = view.getTfTenChuong().getSelectedItem().toString().trim();
         String ten = view.getTfTen().getText().trim();
         String loai = view.getTfLoai().getSelectedItem().toString().trim();
         String tuoi = view.getTfTuoi().getText().trim();
-        String gioiTinh = view.getTfGioiTinh().getText().trim();
+        String gioiTinh = view.getTfGioiTinh().getSelectedItem().toString().trim();
         String trangThai = view.getTfTrangThai().getSelectedItem().toString().trim();
         int age;
 
-        if (ten.isEmpty()) {
+        if (tenchuong.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Hãy nhập tên chuồng");
+            return null;
+        } else if (ten.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Hãy nhập tên động vật");
             return null;
         } else if (loai.isEmpty()) {
@@ -370,7 +381,7 @@ public class ControllerDongVat {
         if (fileAnhDongVat != null) {
             anh = fileAnhDongVat.getName();
         }
-        return new ModelDongVat(ten, loai, age, gioiTinh, trangThai, anh);
+        return new ModelDongVat(ten, tenchuong, loai, age, gioiTinh, trangThai, anh);
 
     }
 
@@ -404,34 +415,27 @@ public class ControllerDongVat {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
         ArrayList<String> loaiListRaw = new ArrayList<>();
+        ControllerChuongTrai controllerChuongTrai = new ControllerChuongTrai();
+
         view.getTfLoai().removeAllItems();
+        view.getTfTenChuong().removeAllItems();
 
         tableModel.setRowCount(0);
+
+        for (ModelChuongTrai chuongTrai : controllerChuongTrai.getListHabitat()) {
+            view.getTfTenChuong().addItem(chuongTrai.getName());
+        }
 
         getListDongVat(new OnGetListDongVatListener() {
             @Override
             public void onSuccess(ArrayList<ModelDongVat> dongVats) {
-                if (!searchString.equals("")) {
-                    for (ModelDongVat modelDongVat : dongVats) {
-                        loaiListRaw.add(modelDongVat.getLoaiDongVat());
-                        if (modelDongVat.toString().contains(searchString)) {
-                            tableModel.addRow(new Object[]{
-                                modelDongVat.getIDDongVat(),
-                                modelDongVat.getTenDongVat(),
-                                modelDongVat.getLoaiDongVat(),
-                                modelDongVat.getTuoiDongVat(),
-                                modelDongVat.getGioiTinhDongVat(),
-                                modelDongVat.getTrangThaiDongVat(),
-                                modelDongVat.getHinhAnhDongVat()
-                            });
-                        }
-                    }
-                } else {
-                    for (ModelDongVat modelDongVat : dongVats) {
-                        loaiListRaw.add(modelDongVat.getLoaiDongVat());
+                for (ModelDongVat modelDongVat : dongVats) {
+                    loaiListRaw.add(modelDongVat.getLoaiDongVat());
+                    if (modelDongVat.toString().contains(searchString)) {
                         tableModel.addRow(new Object[]{
                             modelDongVat.getIDDongVat(),
                             modelDongVat.getTenDongVat(),
+                            modelDongVat.getTenChuong(),
                             modelDongVat.getLoaiDongVat(),
                             modelDongVat.getTuoiDongVat(),
                             modelDongVat.getGioiTinhDongVat(),
@@ -443,7 +447,7 @@ public class ControllerDongVat {
 
                 view.setLabelSLDongVat("Tổng số động vật: " + dongVats.size());
                 table.setModel(tableModel);
-                Utils.Utility.hideColumn(table, 6);
+                Utils.Utility.hideColumn(table, 7);
 
                 HashSet<String> setWithoutDuplicates = new HashSet<>(loaiListRaw);
                 ArrayList<String> loaiList = new ArrayList<>(setWithoutDuplicates);
@@ -467,7 +471,6 @@ public class ControllerDongVat {
 
     public void themDongVat(ModelDongVat dongVat) {
         try {
-
             Gson gson = new Gson();
             String json = gson.toJson(dongVat);
 
@@ -537,9 +540,11 @@ public class ControllerDongVat {
                     responseBuilder.append(inputLine);
                 }
             }
+
             Gson gson = new Gson();
             ModelDongVat[] modelsArray = gson.fromJson(responseBuilder.toString(), ModelDongVat[].class);
             ArrayList<ModelDongVat> dongvats = new ArrayList<>(Arrays.asList(modelsArray));
+
             connection.disconnect();
             listener.onSuccess(dongvats);
         } catch (JsonSyntaxException | IOException e) {
@@ -565,5 +570,30 @@ public class ControllerDongVat {
         void onStart();
 
         void onFailure();
+    }
+
+    public boolean isDuplicateTenDongVat(ModelDongVat dongVatCheck) {
+        isDuplicate = false;
+        getListDongVat(new OnGetListDongVatListener() {
+            @Override
+            public void onSuccess(ArrayList<ModelDongVat> dongVats) {
+                for (ModelDongVat dongVat : dongVats) {
+                    if (dongVat.getTenDongVat().equals(dongVatCheck.getTenDongVat())) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onFailure() {
+            }
+        });
+
+        return isDuplicate; // Trả về giá trị trùng lặp
     }
 }

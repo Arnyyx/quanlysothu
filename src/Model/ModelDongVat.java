@@ -4,7 +4,6 @@
  */
 package Model;
 
-
 /**
  *
  * @author ACER
@@ -13,14 +12,16 @@ public class ModelDongVat {
 
     private int IDDongVat;
     private String TenDongVat;
+    private String TenChuong;
     private String LoaiDongVat;
     private int TuoiDongVat;
     private String GioiTinhDongVat;
     private String TrangThaiDongVat;
     private String HinhAnhDongVat;
 
-    public ModelDongVat(String TenDongVat, String LoaiDongVat, int TuoiDongVat, String GioiTinhDongVat, String TrangThaiDongVat, String HinhAnhDongVat) {
+    public ModelDongVat(String TenDongVat, String TenChuong, String LoaiDongVat, int TuoiDongVat, String GioiTinhDongVat, String TrangThaiDongVat, String HinhAnhDongVat) {
         this.TenDongVat = TenDongVat;
+        this.TenChuong = TenChuong;
         this.LoaiDongVat = LoaiDongVat;
         this.TuoiDongVat = TuoiDongVat;
         this.GioiTinhDongVat = GioiTinhDongVat;
@@ -33,7 +34,15 @@ public class ModelDongVat {
 
     @Override
     public String toString() {
-        return (IDDongVat + TenDongVat + LoaiDongVat + TuoiDongVat + GioiTinhDongVat + TrangThaiDongVat + HinhAnhDongVat).toLowerCase();
+        return (IDDongVat + TenDongVat + TenChuong + LoaiDongVat + TuoiDongVat + GioiTinhDongVat + TrangThaiDongVat + HinhAnhDongVat).toLowerCase();
+    }
+
+    public String getTenChuong() {
+        return TenChuong;
+    }
+
+    public void setTenChuong(String TenChuong) {
+        this.TenChuong = TenChuong;
     }
 
     public void setIDDongVat(int IDDongVat) {

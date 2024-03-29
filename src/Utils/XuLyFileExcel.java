@@ -22,7 +22,7 @@ public class XuLyFileExcel {
             FileNameExtensionFilter fnef = new FileNameExtensionFilter("Excel Files", "xls", "xlsx", "xlsm");
             chooser.setFileFilter(fnef);
             if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                // Lấy đường dẫn vừa chọn + tên tệp
+                // Lấy đường dẫn vừa chọn + tên tệp......
                 String path = chooser.getSelectedFile().getPath();
                 if (!path.contains(".xlsx")) {
                     path += ".xlsx";

@@ -24,6 +24,7 @@ public class ControllerThongKeDongVat {
     ViewThongKeDongVat view;
     ControllerDongVat controllerDongVat;
     ArrayList<ModelDongVat> listDongVat;
+    JFreeChart chart;
 
     public ControllerThongKeDongVat() {
         view = new ViewThongKeDongVat();
@@ -46,12 +47,18 @@ public class ControllerThongKeDongVat {
 
         view.getBtnThongKeTheoLoai().addActionListener((e) -> {
             thongKeTheoLoai();
+            view.getBtnXuat().setEnabled(true);
         });
         view.getBtnThongKeTheoTrangThai().addActionListener((e) -> {
             thongKeTheoTrangThai();
+            view.getBtnXuat().setEnabled(true);
         });
         view.getBtnThongKeTheoTuoi().addActionListener((e) -> {
             thongKeTheoTuoi();
+            view.getBtnXuat().setEnabled(true);
+        });
+        view.getBtnXuat().addActionListener((e) -> {
+            Utils.XuLyPDF.export(chart);
         });
     }
 
@@ -71,10 +78,11 @@ public class ControllerThongKeDongVat {
             dataset.setValue(entry.getKey(), entry.getValue());
         }
 
-        JFreeChart chart = ChartFactory.createPieChart("Biểu đồ cơ cấu loài trong sở thú", dataset, false, true, true);
+        chart = ChartFactory.createPieChart("Biểu đồ cơ cấu loài trong sở thú", dataset, false, true, true);
         view.getLabel().setText("Tổng số động vật: " + listDongVat.size());
         view.getBieuDoPanel().setChart(chart);
         view.repaint();
+
     }
 
     public void thongKeTheoTrangThai() {
@@ -94,8 +102,7 @@ public class ControllerThongKeDongVat {
             dataset.setValue(entry.getKey(), entry.getValue());
         }
 
-        JFreeChart chart = ChartFactory.createPieChart(
-                "Biểu đồ cơ cấu sức khoẻ động vật ", dataset, false, true, true);
+        chart = ChartFactory.createPieChart("Biểu đồ cơ cấu sức khoẻ động vật ", dataset, false, true, true);
         view.getLabel().setText("Tổng số động vật: " + listDongVat.size());
         view.getBieuDoPanel().setChart(chart);
         view.repaint();
@@ -118,13 +125,13 @@ public class ControllerThongKeDongVat {
             dataset.setValue(entry.getValue(), "Tuổi", entry.getKey());
         }
 
-        JFreeChart barChart = ChartFactory.createBarChart(
+         chart = ChartFactory.createBarChart(
                 "Biểu đồ thể hiện độ tuổi động vật",
                 "Tuổi", "Con",
                 dataset, PlotOrientation.VERTICAL, false, false, false);
 
         view.getLabel().setText("Tổng số động vật: " + listDongVat.size());
-        view.getBieuDoPanel().setChart(barChart);
+        view.getBieuDoPanel().setChart(chart);
         view.repaint();
     }
 

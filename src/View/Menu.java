@@ -1,5 +1,6 @@
 package View;
 
+import Controller.ControllerChamSoc;
 import Controller.ControllerChuongTrai;
 import Controller.ControllerDongVat;
 import Controller.ControllerNCC;
@@ -31,6 +32,7 @@ public class Menu {
         JMenuItem quanLyTaiKhoan = new JMenuItem("Quản lý tài khoản");
         JMenuItem quanLyNhanVien = new JMenuItem("Quản lý nhân viên");
         JMenuItem quanLyDongVat = new JMenuItem("Quản lý động vật");
+        JMenuItem chamSocDongVat = new JMenuItem("Chăm sóc động vật");
         JMenuItem quanLyVe = new JMenuItem("Quản lý vé");
         JMenuItem quanLyChuongTrai = new JMenuItem("Quản lý chuồng trại");
         JMenuItem quanLyThucAn = new JMenuItem("Quản lý thức ăn");
@@ -43,6 +45,7 @@ public class Menu {
         }
 
         quanLy.add(quanLyDongVat);
+        quanLy.add(chamSocDongVat);
         quanLy.add(quanLyVe);
         quanLy.add(quanLyChuongTrai);
         quanLy.add(quanLyThucAn);
@@ -69,6 +72,11 @@ public class Menu {
             frame.dispose();
             ViewDongVat v = new ViewDongVat();
             new ControllerDongVat(v);
+        });
+        chamSocDongVat.addActionListener((e) -> {
+            frame.dispose();
+            ViewChamSoc v = new ViewChamSoc();
+            new ControllerChamSoc(v);
         });
         quanLyVe.addActionListener((e) -> {
             frame.dispose();
@@ -104,6 +112,7 @@ public class Menu {
         quanLyTaiKhoan.setFont(font);
         quanLyNhanVien.setFont(font);
         quanLyDongVat.setFont(font);
+        chamSocDongVat.setFont(font);
         quanLyVe.setFont(font);
         quanLyChuongTrai.setFont(font);
         quanLyThucAn.setFont(font);

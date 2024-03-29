@@ -13,24 +13,27 @@ public class ViewDongVat extends JFrame {
     private JLabel label = new JLabel("QUẢN LÝ ĐỘNG VẬT", SwingConstants.CENTER);
     private JLabel labelSLDongVat = new JLabel();
 
-    private String[] lableStrings = {"Mã", "Tên", "Loài", "Tuổi", "Giới Tính", "Trạng thái", "Ảnh"};
+    private String[] lableStrings = {"Mã", "Tên", "Tên chuồng", "Loài", "Tuổi", "Giới Tính", "Trạng thái", "Ảnh"};
     private String[] trangThaiStrings = {"Khoẻ mạnh", "Bị bệnh", "Bị thương", "Mang thai", "Chết"};
+    private String[] gioiTinhStrings = {"Đực", "Cái", "Không xác định"};
 
     private JLabel lbID = new JLabel(lableStrings[0]);
     private JLabel lbTen = new JLabel(lableStrings[1]);
-    private JLabel lbLoai = new JLabel(lableStrings[2]);
-    private JLabel lbTuoi = new JLabel(lableStrings[3]);
-    private JLabel lbGioiTinh = new JLabel(lableStrings[4]);
-    private JLabel lbTrangThai = new JLabel(lableStrings[5]);
+    private JLabel lbTenChuong = new JLabel(lableStrings[2]);
+    private JLabel lbLoai = new JLabel(lableStrings[3]);
+    private JLabel lbTuoi = new JLabel(lableStrings[4]);
+    private JLabel lbGioiTinh = new JLabel(lableStrings[5]);
+    private JLabel lbTrangThai = new JLabel(lableStrings[6]);
 
     private JLabel lbAnhDongVat = new JLabel();
 
     // Text field
     private JTextField tfID = new JTextField(20);
+    private JComboBox<String> tfTenChuong = new JComboBox();
     private JTextField tfTen = new JTextField(20);
     private JComboBox<String> tfLoai = new JComboBox();
     private JTextField tfTuoi = new JTextField(20);
-    private JTextField tfGioiTinh = new JTextField(20);
+    private JComboBox<String> tfGioiTinh = new JComboBox(gioiTinhStrings);
     private JComboBox<String> tfTrangThai = new JComboBox(trangThaiStrings);
     private JTextField tfTimKiem = new JTextField(20);
     // Button
@@ -80,20 +83,11 @@ public class ViewDongVat extends JFrame {
         lbAnhDongVat.setIcon(c.getAnhDongVat(""));
         pnAnh.add(lbAnhDongVat);
 
-//        btnAdd.setIcon(new ImageIcon("image/Icons/add.png"));
-//        btnDelete.setIcon(new ImageIcon("image/Icons/delete.png"));
-//        btnSave.setIcon(new ImageIcon("image/Icons/save.png"));
-//        btnSearch.setIcon(new ImageIcon("image/Icons/search.png"));
-//        btnLoad.setIcon(new ImageIcon("image/Icons/refresh.png"));
-//        btnNhap.setIcon(new ImageIcon("image/Icons/file-import.png"));
-//        btnXuat.setIcon(new ImageIcon("image/Icons/file-export.png"));
-
         table.getTableHeader().setReorderingAllowed(false);
         tfID.setEditable(false);
         tfLoai.setEditable(true);
         ((AbstractDocument) tfTuoi.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
 
-        // Thêm label "Quản lý động vật" vào panel
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -119,36 +113,42 @@ public class ViewDongVat extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 3;
+        inputPanel.add(lbTenChuong, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(tfTenChuong, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         inputPanel.add(lbLoai, gbc);
         gbc.gridx = 1;
         inputPanel.add(tfLoai, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         inputPanel.add(lbTuoi, gbc);
         gbc.gridx = 1;
         inputPanel.add(tfTuoi, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         inputPanel.add(lbGioiTinh, gbc);
         gbc.gridx = 1;
         inputPanel.add(tfGioiTinh, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         inputPanel.add(lbTrangThai, gbc);
         gbc.gridx = 1;
         inputPanel.add(tfTrangThai, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 7;
+        gbc.gridy = 8;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(pnAnh, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(btnImageChange, gbc);
@@ -181,12 +181,15 @@ public class ViewDongVat extends JFrame {
         Font font = UIManager.getFont("large.font");
         label.setFont(new Font("Arial", Font.BOLD, 20));
         lbID.setFont(font);
+        lbTenChuong.setFont(font);
         lbTen.setFont(font);
         lbLoai.setFont(font);
         lbTuoi.setFont(font);
         lbGioiTinh.setFont(font);
         lbTrangThai.setFont(font);
+
         tfID.setFont(font);
+        tfTenChuong.setFont(font);
         tfTen.setFont(font);
         tfLoai.setFont(font);
         tfTuoi.setFont(font);
@@ -209,11 +212,20 @@ public class ViewDongVat extends JFrame {
         tableModel.addColumn(lableStrings[3]);
         tableModel.addColumn(lableStrings[4]);
         tableModel.addColumn(lableStrings[5]);
+        tableModel.addColumn(lableStrings[6]);
         tableModel.addColumn("Ảnh");
         table.setFont(font);
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public JComboBox<String> getTfTenChuong() {
+        return tfTenChuong;
+    }
+
+    public void setTfTenChuong(JComboBox<String> tfTenChuong) {
+        this.tfTenChuong = tfTenChuong;
     }
 
     public JLabel getLabel() {
@@ -264,7 +276,7 @@ public class ViewDongVat extends JFrame {
         return tfTuoi;
     }
 
-    public JTextField getTfGioiTinh() {
+    public JComboBox getTfGioiTinh() {
         return tfGioiTinh;
     }
 

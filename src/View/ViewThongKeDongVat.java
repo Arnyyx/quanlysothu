@@ -24,6 +24,7 @@ public class ViewThongKeDongVat extends JFrame {
     private JButton btnThongKeTheoLoai = new JButton("Thống kê theo loài");
     private JButton btnThongKeTheoTuoi = new JButton("Thống kê theo tuổi");
     private JButton btnThongKeTheoTrangThai = new JButton("Thống kê theo trạng thái");
+    private JButton btnXuat = new JButton("Xuất ảnh");
     private JLabel label = new JLabel("Hãy chọn một loại biểu đồ");
     private ChartPanel bieuDoPanel = new ChartPanel(null);
 
@@ -42,6 +43,7 @@ public class ViewThongKeDongVat extends JFrame {
         panel.add(btnThongKeTheoLoai);
         panel.add(btnThongKeTheoTuoi);
         panel.add(btnThongKeTheoTrangThai);
+        panel.add(btnXuat);
 
         bieuDoPanel.setBackground(Color.WHITE);
         bieuDoPanel.setPreferredSize(new Dimension(200, 200));
@@ -50,12 +52,14 @@ public class ViewThongKeDongVat extends JFrame {
         mainPanel.add(panel, BorderLayout.NORTH);
 
         add(mainPanel);
+        btnXuat.setEnabled(false);
 
-        Font font = new Font("Arial", Font.PLAIN, 14);
+        Font font = Utils.Utility.getFont();
         label.setFont(font);
         btnThongKeTheoLoai.setFont(font);
         btnThongKeTheoTuoi.setFont(font);
         btnThongKeTheoTrangThai.setFont(font);
+        btnXuat.setFont(font);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -73,6 +77,10 @@ public class ViewThongKeDongVat extends JFrame {
         return btnThongKeTheoTrangThai;
     }
 
+    public JButton getBtnXuat() {
+        return btnXuat;
+    }
+
     public JLabel getLabel() {
         return label;
     }
@@ -84,6 +92,5 @@ public class ViewThongKeDongVat extends JFrame {
     public void setLabel(JLabel label) {
         this.label = label;
     }
-    
-    
+
 }
