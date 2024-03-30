@@ -5,6 +5,7 @@
 package Controller;
 
 import Model.ModelVe;
+import Model.ModelLoaiVe;
 import Utils.IntegerDocumentFilter;
 import Utils.XuLyFileExcel;
 import View.ViewVe;
@@ -21,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -236,7 +238,7 @@ public class ControllerVe {
             view.getTfID().setText("");
             view.getTfIDNhanVien().setSelectedItem("");
             view.getTfTen().setText("");
-            view.getTfLoai().setSelectedItem("Người lớn");
+            view.getTfLoai().setSelectedItem("");
             IntegerDocumentFilter.clearTextField(view.getTfGia());
             IntegerDocumentFilter.clearTextField(view.getTfSoLuong());
 
@@ -293,7 +295,6 @@ public class ControllerVe {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
         tableModel.setRowCount(0);
-
         getListVe(new OnGetListVeListener() {
             @Override
             public void onSuccess(ArrayList<ModelVe> modelVes) {
@@ -325,6 +326,34 @@ public class ControllerVe {
 
                 view.setLabelSLVe("Tổng số vé: " + modelVes.size());
                 table.setModel(tableModel);
+                try {
+                    String apiUrl = Utils.Utility.apiString + "loaive/";
+                    URL url = new URL(apiUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    StringBuilder responseBuilder;
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                        responseBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null) {
+                            responseBuilder.append(inputLine);
+                        }
+                    }
+
+                    Gson gson = new Gson();
+                    ModelLoaiVe[] modelsArray = gson.fromJson(responseBuilder.toString(), ModelLoaiVe[].class);
+
+                    ArrayList<ModelLoaiVe> loaiList = new ArrayList<>(Arrays.asList(modelsArray));
+                     view.getTfLoai().removeAllItems();
+                    for (ModelLoaiVe loai : loaiList) {
+                        view.getTfLoai().addItem(loai.getTenLoaiVe());
+                    }
+                    connection.disconnect();
+                } catch (JsonSyntaxException | IOException e) {
+                    System.out.println("Controller.ControllerVe.getListLoaiVe()" + e);
+                    JOptionPane.showMessageDialog(view, "Không thể kế nối đến máy chủ");
+                }
             }
 
             @Override

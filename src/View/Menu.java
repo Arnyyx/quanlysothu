@@ -9,6 +9,8 @@ import Controller.ControllerTaiKhoan;
 import Controller.ControllerThongKeDongVat;
 import Controller.ControllerVe;
 import Controller.Controllerthucan;
+import Controller.ControllerLoaiVe;
+
 import Main.Main;
 import java.awt.Font;
 
@@ -34,9 +36,11 @@ public class Menu {
         JMenuItem quanLyDongVat = new JMenuItem("Quản lý động vật");
         JMenuItem chamSocDongVat = new JMenuItem("Chăm sóc động vật");
         JMenuItem quanLyVe = new JMenuItem("Quản lý vé");
+        JMenuItem quanLyLoaiVe = new JMenuItem("Quản lý loại vé");
         JMenuItem quanLyChuongTrai = new JMenuItem("Quản lý chuồng trại");
         JMenuItem quanLyThucAn = new JMenuItem("Quản lý thức ăn");
         JMenuItem quanLyNCC = new JMenuItem("Quản lý nhà cung cấp");
+
         JMenuItem dangXuat = new JMenuItem("Đăng xuất");
 
         if (quyen.equals("QL")) {
@@ -47,6 +51,8 @@ public class Menu {
         quanLy.add(quanLyDongVat);
         quanLy.add(chamSocDongVat);
         quanLy.add(quanLyVe);
+        quanLy.add(quanLyLoaiVe);
+
         quanLy.add(quanLyChuongTrai);
         quanLy.add(quanLyThucAn);
         quanLy.add(quanLyNCC);
@@ -83,6 +89,11 @@ public class Menu {
             ViewVe v = new ViewVe();
             new ControllerVe(v);
         });
+        quanLyLoaiVe.addActionListener((e) -> {
+            frame.dispose();
+            ViewLoaiVe v = new ViewLoaiVe();
+            new ControllerLoaiVe(v);
+        });
         quanLyChuongTrai.addActionListener((e) -> {
             frame.dispose();
             ViewChuongTrai v = new ViewChuongTrai();
@@ -114,6 +125,7 @@ public class Menu {
         quanLyDongVat.setFont(font);
         chamSocDongVat.setFont(font);
         quanLyVe.setFont(font);
+        quanLyLoaiVe.setFont(font);
         quanLyChuongTrai.setFont(font);
         quanLyThucAn.setFont(font);
         quanLyNCC.setFont(font);
