@@ -13,7 +13,6 @@ public class ViewVe extends JFrame {
     private JLabel labelSLVe = new JLabel();
 
     private String[] lableStrings = {"ID Vé", "ID Nhân viên", "Tên vé", "Loại vé", "Giá vé", "Số lượng"};
-    private String[] loaiVeString = {"Người lớn", "Trẻ em", "Quân nhân", "Người khuyết tật"};
 
     private JLabel lbID = new JLabel(lableStrings[0]);
     private JLabel lbIDNhanVien = new JLabel(lableStrings[1]);
@@ -26,7 +25,7 @@ public class ViewVe extends JFrame {
     private JTextField tfID = new JTextField(20);
     private JComboBox<String> tfIDNhanVien = new JComboBox();
     private JTextField tfTen = new JTextField(20);
-    private JComboBox<String> tfLoai = new JComboBox(loaiVeString);
+    private JComboBox<String> tfLoai = new JComboBox();
     private JTextField tfGia = new JTextField(20);
     private JTextField tfSoLuong = new JTextField(20);
     private JTextField tfTimKiem = new JTextField(20);
@@ -50,7 +49,7 @@ public class ViewVe extends JFrame {
     };
 
     public ViewVe() {
-        setTitle("Quản lý động vật");
+        setTitle("Quản lý vé");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
