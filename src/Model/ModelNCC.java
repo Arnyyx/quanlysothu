@@ -12,48 +12,53 @@ import java.util.Iterator;
  * @author Admin
  */
 public class ModelNCC {
-private int idNCC;
-private String tenNCC;
-    private String loaiThucAn;
-    private String viTri;
 
-    public ModelNCC(int idNCC, String tenNCC, String loaiThucAn, String viTri) {
-        this.idNCC = idNCC;
-        this.tenNCC = tenNCC;
-        this.loaiThucAn = loaiThucAn;
-        this.viTri = viTri;
+    private int IdNCC;
+    private String TenNCC;
+    private String LoaiThucAN;
+    private String Vitri;
+
+    public ModelNCC(String tenNCC, String loaiThucAn, String viTri) {
+
+        this.TenNCC = tenNCC;
+        this.LoaiThucAN = loaiThucAn;
+        this.Vitri = viTri;
+    }
+
+    public ModelNCC() {
+
     }
 
     public int getIdNCC() {
-        return idNCC;
+        return IdNCC;
     }
 
     public void setIdNCC(int idNCC) {
-        this.idNCC = idNCC;
+        this.IdNCC = idNCC;
     }
 
     public String getTenNCC() {
-        return tenNCC;
+        return TenNCC;
     }
 
     public void setTenNCC(String tenNCC) {
-        this.tenNCC = tenNCC;
+        this.TenNCC = tenNCC;
     }
 
     public String getLoaiThucAn() {
-        return loaiThucAn;
+        return LoaiThucAN;
     }
 
     public void setLoaiThucAn(String loaiThucAn) {
-        this.loaiThucAn = loaiThucAn;
+        this.LoaiThucAN = loaiThucAn;
     }
 
     public String getViTri() {
-        return viTri;
+        return Vitri;
     }
 
     public void setViTri(String viTri) {
-        this.viTri = viTri;
+        this.Vitri = viTri;
     }
 
     public void addSupplier(ModelNCC supplier, ArrayList<ModelNCC> supplierList) {
@@ -70,7 +75,7 @@ private String tenNCC;
     }
 
     public void deleteSupplier(int id, ArrayList<ModelNCC> supplierList) {
-        for (Iterator<ModelNCC> iterator = supplierList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<ModelNCC> iterator = supplierList.iterator(); iterator.hasNext();) {
             ModelNCC supplier = iterator.next();
             if (supplier.getIdNCC() == id) {
                 iterator.remove();

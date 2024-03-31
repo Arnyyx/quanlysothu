@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -26,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ViewNCC extends JFrame {
 
-    private JButton addButton, updateButton, deleteButton, searchButton, importButton;
+    private JButton backButton, addButton, updateButton, deleteButton, searchButton, importButton;
     private JLabel searchLable, idLabel, nameLabel, foodTypeLabel, locationLabel;
     private JTextField searchField, idField, nameField, foodTypeField, locationField;
     private JTable table;
@@ -35,30 +37,29 @@ public class ViewNCC extends JFrame {
 
     public ViewNCC() {
         new Menu(this);
-        setSize(1000, 700);
         setTitle("Supplier Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         searchField = new JTextField(20);
         searchLable = new JLabel("Search:");
-        idLabel = new JLabel("ID:");
+        idLabel = new JLabel("ID NCC:");
         idField = new JTextField(20);
-
-        nameLabel = new JLabel("Name:");
+        idField.setEditable(false);
+        nameLabel = new JLabel("Tên NCC:");
         nameField = new JTextField(20);
 
-        foodTypeLabel = new JLabel("Food Type:");
+        foodTypeLabel = new JLabel("Loại thức ăn:");
         foodTypeField = new JTextField(20);
 
-        locationLabel = new JLabel("Location:");
+        locationLabel = new JLabel("Vị trí:");
         locationField = new JTextField(20);
 
-        addButton = new JButton("Add");
-        updateButton = new JButton("Update");
-        deleteButton = new JButton("Delete");
-        searchButton = new JButton("Search");
+        addButton = new JButton("Thêm");
+        updateButton = new JButton("Sửa");
+        deleteButton = new JButton("Xóa");
+        searchButton = new JButton("Tìm kiếm");
 
-        importButton = new JButton("Import");
-
+        importButton = new JButton("Xuất Excel");
+        backButton = new JButton("Quay lại");
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         searchPanel.add(searchLable);
@@ -78,10 +79,9 @@ public class ViewNCC extends JFrame {
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
-
         buttonPanel.add(importButton);
-
-        JLabel titleLabel = new JLabel("Supplier Management System");
+        buttonPanel.add(backButton);
+        JLabel titleLabel = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,8 +94,11 @@ public class ViewNCC extends JFrame {
         add(topPanel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+        model.addColumn("ID Nhà cung cấp");
+        model.addColumn("Tên nhà cung cấp");
+        model.addColumn("Loại thức ăn");
+        model.addColumn("Vị Trí");
 
-        DefaultTableModel model = new DefaultTableModel();
         table = new JTable(model);
         scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
@@ -105,6 +108,8 @@ public class ViewNCC extends JFrame {
         // Thêm danh sách vào layout
         add(listPanel, BorderLayout.WEST);
 
+//        pack();
+        setSize(1000, 700);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -122,6 +127,22 @@ public class ViewNCC extends JFrame {
         return addButton;
     }
 
+    public void addAddButtonListener(ActionListener listener) {
+        addButton.addActionListener(listener);
+    }
+
+    public void addUpdateButtonListener(ActionListener listener) {
+        updateButton.addActionListener(listener);
+    }
+
+    public JButton getBackButton() {
+        return backButton;
+    }
+
+    public void addBackButtonListener(ActionListener listener) {
+        backButton.addActionListener(listener);
+    }
+
     public JButton getUpdateButton() {
         return updateButton;
     }
@@ -130,12 +151,24 @@ public class ViewNCC extends JFrame {
         return deleteButton;
     }
 
+    public void addDeleteButtonListener(ActionListener listener) {
+        deleteButton.addActionListener(listener);
+    }
+
     public JButton getSearchButton() {
         return searchButton;
     }
 
-    public JButton getImportButton() {
+    public void addSearchButtonListener(ActionListener listener) {
+        searchButton.addActionListener(listener);
+    }
+
+    public JButton getExportButton() {
         return importButton;
+    }
+
+    public void addExportButtonListener(ActionListener listener) {
+        importButton.addActionListener(listener);
     }
 
     public JTextField getIdField() {
@@ -159,4 +192,12 @@ public class ViewNCC extends JFrame {
         return searchField;
     }
 
+    public void clear() {
+        getIdField().setText("");
+        getNameField().setText("");
+        getFoodTypeField().setText("");
+        getLocationField().setText("");
+
+//            getSupplierField().setSelectedItem(1);
+    }
 }

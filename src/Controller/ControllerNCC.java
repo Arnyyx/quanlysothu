@@ -4,14 +4,25 @@ import Model.ModelNCC;
 import Model.ModelThucAn;
 import View.ViewNCC;
 import View.ViewThucAn;
+import com.google.gson.Gson;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -24,303 +35,304 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ControllerNCC {
 
     private ViewNCC view;
-    private Connection connection;
     private DefaultTableModel tableModel; // Added table model as a class member
+    String apiString = "http://localhost:8000/ncc"; // Update with your API string
 
     public ControllerNCC(ViewNCC view) {
         this.view = view;
-        this.connection = getcon();
-        tableModel = new DefaultTableModel(); // Initialize table model
-        view.getTable().setModel(tableModel); // Set table model to the JTable in the view
-
-        // Add button event handling
-        JButton addButton = view.getAddButton();
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addncc();
-            }
-        });
-//         Sự kiện cho button "Update"
-        JButton updateButton = view.getUpdateButton();
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatencc();
-            }
-        });
-// Add the event handling for the searchButton
-        JButton searchButton = view.getSearchButton();
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = view.getSearchField().getText(); // Assuming name is used for search
-
-                if (!name.isEmpty()) {
-                    searchByName(name);
-                } else {
-                    System.out.println("Please enter a name to search.");
-                }
-            }
-        });
-        JTable table = view.getTable();
-
-        // Xử lý sự kiện khi người dùng chọn một hàng trong JTable
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-                    int selectedRow = table.getSelectedRow();
-
-                    // Lấy dữ liệu từ hàng được chọn và đưa vào các JTextField tương ứng
-                    view.getIdField().setText(table.getValueAt(selectedRow, 0).toString());
-                    view.getNameField().setText(table.getValueAt(selectedRow, 1).toString());
-                    view.getFoodTypeField().setText(table.getValueAt(selectedRow, 2).toString());
-                    view.getLocationField().setText(table.getValueAt(selectedRow, 3).toString());
-
-                }
-            }
-        });
-
-        JButton importButton = view.getImportButton();
-        importButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                exportToExcel();
-            }
-        });
-        JButton deleteButton = view.getDeleteButton();
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = view.getTable().getSelectedRow();
-                if (selectedRow != -1) {
-                    int idColumn = 0; // Assume ID is in the first column
-                    String ID = view.getTable().getValueAt(selectedRow, idColumn).toString();
-
-                    deletethucan(ID);
-                } else {
-                    System.out.println("Vui lòng chọn một hàng để xóa.");
-                }
-            }
-        });
-
-        getcon();
         fillData("");
+        CLICKTABLE();
+        BTNADD();
+        BTNUPDATE();
+        BTNDELETE();
+        BTNSEARCH();
+        XuatExcel();
+        BTNBACK();
     }
 
-    public Connection getcon() {
-        String url = "jdbc:mysql://localhost:3306/quanlysothu";
-        String user = "root";
-        String password = "";
+    public ArrayList<ModelNCC> getListNCC(String search) {
+        ArrayList<ModelNCC> nccArrayList = new ArrayList<>();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException ex) {
-            // Handle exception
+            URL url = new URL(apiString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            Gson gson = new Gson();
+
+            ModelNCC[] nccArray = gson.fromJson(response.toString(), ModelNCC[].class);
+            nccArrayList = new ArrayList<>(Arrays.asList(nccArray));
+
+            connection.disconnect();
+        } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
-        } catch (SQLException ex) {
-            // Handle exception
-            ex.printStackTrace();
-            return null;
         }
+
+        return nccArrayList;
     }
 
     public void fillData(String search) {
+        DefaultTableModel tableModel = view.getModel();
         JTable table = view.getTable();
-        ArrayList<ModelNCC> nccList = getFoodListFromDatabase(search);
-        tableModel = constructTableModel(nccList);
-        table.setModel(tableModel);
-    }
+        tableModel.setRowCount(0);
 
-    private ArrayList<ModelNCC> getFoodListFromDatabase(String search) {
-        ArrayList<ModelNCC> list = new ArrayList<ModelNCC>();
-        try {
-            String sql = "SELECT * FROM ncc";
-            PreparedStatement statement = connection.prepareStatement(sql);
+        ArrayList<ModelNCC> listncc;
+        listncc = getListNCC("");
+        if (!search.equals("")) {
+            for (ModelNCC ncc : listncc) {
+//                loaiListRaw.add(food.getTenThucAn());
+//                TrangThaiListRaw.add(habitat.getState());
+                if (ncc.getTenNCC().toLowerCase().contains(search.toLowerCase())) {
+                    tableModel.addRow(new Object[]{
+                        ncc.getIdNCC(),
+                        ncc.getTenNCC(),
+                        ncc.getLoaiThucAn(),
+                        ncc.getViTri()
 
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                ModelNCC ncc = new ModelNCC(
-                        resultSet.getInt("IdNCC"),
-                        resultSet.getString("TenNCC"),
-                        resultSet.getString("LoaiThucAN"),
-                        resultSet.getString("Vitri")
-                );
-                list.add(ncc);
-            }
-            return list;
-            // Update the table with search results
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return list;
-    }
-
-    private DefaultTableModel constructTableModel(ArrayList<ModelNCC> nccList) {
-        String[] columns = {"ID", "Name", "Food Type", "Location "};
-        DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
-
-        for (ModelNCC ncc : nccList) {
-            Object[] rowData = {
-                ncc.getIdNCC(),
-                ncc.getTenNCC(),
-                ncc.getLoaiThucAn(),
-                ncc.getViTri(),};
-            tableModel.addRow(rowData);
-        }
-
-        return tableModel;
-    }
-
-    private void addncc() {
-        // Retrieve data including image path from text fields
-        String ID = view.getIdField().getText();
-        String name = view.getNameField().getText();
-        String type = view.getFoodTypeField().getText();
-        String location = view.getLocationField().getText();
-
-        if (!name.isEmpty() && !type.isEmpty()
-                && !location.isEmpty()) {
-            try {
-                String sql = "INSERT INTO ncc (TenNCC, LoaiThucAN, ViTri) VALUES (?, ?, ?)";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, name);
-                statement.setString(2, type);
-                statement.setString(3, location); // Save image path to the database
-
-                int rowsInserted = statement.executeUpdate();
-
-                if (rowsInserted > 0) {
-                    System.out.println("A new ncc item was inserted successfully!");
-                    fillData(""); // Refresh the table with updated data
+                    });
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                // Handle any database-related exceptions here
             }
         } else {
-            System.out.println("Please fill in all the fields.");
+            for (ModelNCC ncc : listncc) {
+//                loaiListRaw.add(habitat.getName());
+//                TrangThaiListRaw.add(habitat.getState());
+                tableModel.addRow(new Object[]{
+                    ncc.getIdNCC(),
+                    ncc.getTenNCC(),
+                    ncc.getLoaiThucAn(),
+                    ncc.getViTri()
+
+                });
+            }
         }
+        table.setModel(tableModel);
+
     }
 
-    private void updatencc() {
-        try {
-            // Kiểm tra xem tất cả các trường có được điền đầy đủ hay không
-            String ID = view.getIdField().getText();
-            String name = view.getNameField().getText();
-            String type = view.getFoodTypeField().getText();
-            String location = view.getLocationField().getText();
+    private void CLICKTABLE() {
+        view.getTable().addMouseListener(new MouseListener() {
 
-            if (!ID.isEmpty() && !name.isEmpty() && !type.isEmpty() && !location.isEmpty()) {
-                String sql = "UPDATE ncc SET TenNCC=?, LoaiThucAN=?, ViTri=? WHERE IdNCC=?";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, name);
-                statement.setString(2, type);
-                statement.setString(3, location);
-                statement.setString(4, ID); // Thêm ID vào lệnh SQL
+            public void mouseClicked(MouseEvent e) {
+                int index = view.getTable().getSelectedRow();
+                try {
+                    URL url = new URL(apiString + '/' + view.getTable().getValueAt(index, 0));
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
 
-                int rowsUpdated = statement.executeUpdate();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
 
-                if (rowsUpdated > 0) {
-                    System.out.println("Food item updated successfully!");
-                    fillData(""); // Làm mới bảng với dữ liệu đã cập nhật
+                    Gson gson = new Gson();
+                    ModelNCC nccArray = gson.fromJson(response.toString(), ModelNCC.class);
+
+                    view.getIdField().setText(nccArray.getIdNCC() + "");
+                    view.getNameField().setText(nccArray.getTenNCC() + "");
+                    view.getFoodTypeField().setText(nccArray.getLoaiThucAn());
+                    view.getLocationField().setText(nccArray.getViTri() + "");
+
+                    connection.disconnect();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
+
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+
+        });
+    }
+
+    private void BTNADD() {
+        view.getAddButton().addActionListener((e) -> {
+            if (view.getNameField().getText().isEmpty() || view.getFoodTypeField().getText().isEmpty() || view.getLocationField().getText().isEmpty()) {
+                // Hiển thị thông báo yêu cầu nhập đủ thông tin trên giao diện người dùng
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập đủ thông tin trong các trường");
             } else {
-                System.out.println("Please fill in all the fields.");
+                try {
+                    // Lấy dữ liệu từ các trường nhập liệu
+                    String tenncc = view.getNameField().getText();
+                    String loaiThucan = view.getFoodTypeField().getText();
+                    String viTri = view.getLocationField().getText();
+
+                    // Tạo đối tượng ModelNCC mới
+                    ModelNCC ncc = new ModelNCC(tenncc, loaiThucan, viTri);
+
+                    // Gọi phương thức để gửi dữ liệu đến server
+                    Postncc(ncc);
+
+                    // Xóa dữ liệu cũ và cập nhật bảng
+                    view.clear();
+                    fillData("");
+                } catch (NumberFormatException ex) {
+                    // Xử lý ngoại lệ NumberFormatException nếu cần
+                    ex.printStackTrace();
+                }
             }
-        } catch (SQLException ex) {
+        });
+    }
+
+    private void BTNUPDATE() {
+        view.getUpdateButton().addActionListener((e) -> {
+            int idncc = Integer.parseInt(view.getIdField().getText());
+            String tenncc = view.getNameField().getText();
+            String loaithucan = view.getFoodTypeField().getText();
+            String vitri = view.getLocationField().getText();
+
+            ModelNCC ncc = new ModelNCC(tenncc, loaithucan, vitri);
+            ncc.setIdNCC(idncc);
+            Gson gson = new Gson();
+            String jsonInputString = gson.toJson(ncc);
+
+            try {
+                URL url = new URL(apiString + '/' + idncc);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("PUT");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+
+                try (OutputStream outputStream = connection.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    outputStream.write(input, 0, input.length);
+                }
+
+                connection.getResponseCode();
+                connection.disconnect();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            view.clear();
+            fillData("");
+
+        });
+    }
+
+    private void BTNDELETE() {
+        view.getDeleteButton().addActionListener((e) -> {
+            int idncc = Integer.parseInt(view.getIdField().getText());
+
+            int choice = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn xóa?", "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                Removencc(idncc);
+                JOptionPane.showMessageDialog(view, "Nhà cung cấp đã được xóa thành công.");
+                view.clear();
+                fillData("");
+            }
+        });
+    }
+
+    private void BTNBACK() {
+        view.getBackButton().addActionListener((e) -> {
+            fillData(""); // Cập nhật dữ liệu khi quay lại bảng chính
+        });
+    }
+
+    private void BTNSEARCH() {
+        view.getSearchButton().addActionListener((e) -> {
+            String searchTerm = view.getSearchField().getText().toLowerCase(); // Get the search keyword from the search field
+            fillData(searchTerm);
+        });
+    }
+
+    private void Postncc(ModelNCC ncc) {
+        try {
+            URL url = new URL(apiString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            Gson gson = new Gson();
+            String jsonInputString = gson.toJson(ncc);
+
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                outputStream.write(input, 0, input.length);
+            }
+
+            connection.getResponseCode();
+            connection.disconnect();
+        } catch (IOException ex) {
             ex.printStackTrace();
-            // Xử lý các ngoại lệ liên quan đến cơ sở dữ liệu ở đây
         }
     }
 
-    private void searchByName(String name) {
+    private void Removencc(int idncc) {
         try {
-            // Perform the search based on the provided name
-            String sql = "SELECT * FROM ncc WHERE TenNCC LIKE ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "%" + name + "%"); // Search for partial matches
-
-            ResultSet resultSet = statement.executeQuery();
-            ArrayList<ModelNCC> searchResults = new ArrayList<ModelNCC>();
-
-            while (resultSet.next()) {
-                ModelNCC ncc = new ModelNCC(
-                        resultSet.getInt("IdNCC"),
-                        resultSet.getString("TenNCC"),
-                        resultSet.getString("LoaiThucAN"),
-                        resultSet.getString("ViTri")
-                );
-                searchResults.add(ncc);
-            }
-
-            // Update the table with search results
-            tableModel = constructTableModel(searchResults);
-            view.getTable().setModel(tableModel);
-        } catch (SQLException ex) {
+            ModelNCC ncc = new ModelNCC();
+            ncc.setIdNCC(idncc);
+            URL url = new URL(apiString + '/' + idncc);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            connection.getResponseCode();
+            connection.disconnect();
+        } catch (IOException ex) {
             ex.printStackTrace();
-            // Handle any database-related exceptions here
         }
     }
 
-// Hàm xóa thức ăn từ cơ sở dữ liệu
-    private void deletethucan(String ID) {
+    private void XuatExcel() {
         try {
-            String sql = "DELETE FROM ncc WHERE IdNCC=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, ID);
+            String excelFilePath = "ncc.xlsx"; // Đường dẫn và tên tệp Excel
 
-            int rowsDeleted = statement.executeUpdate();
+            Workbook workbook = new XSSFWorkbook(); // Tạo một Workbook mới
 
-            if (rowsDeleted > 0) {
-                System.out.println("Thức ăn đã được xóa thành công!");
-                fillData(""); // Làm mới bảng với dữ liệu đã cập nhật
-            } else {
-                System.out.println("Không có mục nào được xóa. Vui lòng kiểm tra lại ID.");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            // Xử lý các ngoại lệ liên quan đến cơ sở dữ liệu ở đây
-        }
-    }
+            Sheet sheet = workbook.createSheet("NCCData"); // Tạo một trang mới trong Workbook
 
-    // Method to export data to an Excel file
-    private void exportToExcel() {
-        try {
-            String excelFilePath = "‪ncc.xlsx"; // Example file path
-            Workbook workbook = new XSSFWorkbook();
-
-            // Tạo một trang mới
-            Sheet sheet = workbook.createSheet("Sheet 1");
-
+            DefaultTableModel model = view.getModel();
             JTable table = view.getTable();
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
 
+            // Tạo dòng tiêu đề trong tệp Excel
             Row headerRow = sheet.createRow(0);
-            for (int col = 0; col < model.getColumnCount(); col++) {
-                Cell cell = headerRow.createCell(col);
-                cell.setCellValue(model.getColumnName(col));
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(model.getColumnName(i));
             }
 
+            // Đưa dữ liệu từ JTable vào tệp Excel
             for (int row = 0; row < model.getRowCount(); row++) {
                 Row excelRow = sheet.createRow(row + 1);
-
                 for (int col = 0; col < model.getColumnCount(); col++) {
                     Cell cell = excelRow.createCell(col);
                     cell.setCellValue(String.valueOf(model.getValueAt(row, col)));
                 }
             }
 
+            // Ghi dữ liệu vào tệp Excel
             try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
                 workbook.write(outputStream);
+                System.out.println("Dữ liệu đã được xuất thành công vào tệp Excel!");
+            } catch (IOException e) {
+                System.out.println("Đã xảy ra lỗi khi ghi dữ liệu ra tệp Excel. Vui lòng kiểm tra và thử lại.");
+                e.printStackTrace();
             }
-
-            System.out.println("Dữ liệu đã được xuất thành công vào tệp Excel!");
-        } catch (IOException e) {
-            System.out.println("Đã xảy ra lỗi khi ghi dữ liệu ra tệp Excel. Vui lòng kiểm tra và thử lại.");
+        } catch (Exception e) {
+            System.out.println("Đã xảy ra lỗi khi xuất Excel.");
             e.printStackTrace();
         }
+
     }
 }
