@@ -10,9 +10,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.toedter.calendar.JDateChooser;
 import java.awt.Component;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -54,4 +61,21 @@ public class Utility {
         column.setPreferredWidth(0);
         column.setResizable(false);
     }
+
+    public static Date addInstant(Date date) {
+        //Add hours to date
+        Instant instant = Instant.now();
+        Date currentDate = Date.from(instant);
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, currentDate.getHours());
+        calendar.add(Calendar.MINUTE, currentDate.getMinutes());
+        calendar.add(Calendar.SECOND, currentDate.getSeconds());
+
+        Date finalDate = calendar.getTime();
+
+        return finalDate;
+    }
+
 }

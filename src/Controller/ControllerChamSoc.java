@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -293,7 +294,7 @@ public class ControllerChamSoc {
     public ModelChamSoc getChamSocFromTextField() {
         String ten = view.getTfTenDongVat().getSelectedItem().toString().trim();
         String loai = view.getTfLoaiChamSoc().getSelectedItem().toString().trim();
-        Date ngay = view.getTfNgayChamSoc().getDate();
+        Date ngay = Utils.Utility.addInstant(view.getTfNgayChamSoc().getDate());
         String tenNhanVien = view.getTfTenNhanVien().getText().trim();
         String ketQua = view.getTfKetQua().getText().trim();
 
