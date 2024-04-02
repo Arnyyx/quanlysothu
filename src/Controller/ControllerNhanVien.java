@@ -31,6 +31,9 @@ public class ControllerNhanVien {
     private ArrayList<ModelNhanVien> listNhanVien;
     String apiString = Utils.Utility.apiString + "nhanvien/";
 
+    public ControllerNhanVien() {
+    }
+
     public ControllerNhanVien(ViewNhanVien view) {
         this.view = view;
         addEventsNhanVien();

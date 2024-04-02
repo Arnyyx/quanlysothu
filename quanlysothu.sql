@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 29, 2024 lúc 02:34 PM
+-- Thời gian đã tạo: Th4 02, 2024 lúc 02:47 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -24,13 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `envmanager`
+--
+
+CREATE TABLE `envmanager` (
+  `ID` int(10) NOT NULL,
+  `IDHabitat` varchar(255) NOT NULL,
+  `Staff` varchar(255) NOT NULL,
+  `Date` date NOT NULL,
+  `State` varchar(255) NOT NULL,
+  `Description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `habitatmanager`
 --
 
 CREATE TABLE `habitatmanager` (
   `ID` int(10) NOT NULL,
   `Name` varchar(255) NOT NULL,
-  `State` varchar(255) NOT NULL,
   `Area` float NOT NULL,
   `QuantityCurrent` int(10) NOT NULL,
   `Quantity` int(10) NOT NULL,
@@ -41,15 +55,12 @@ CREATE TABLE `habitatmanager` (
 -- Đang đổ dữ liệu cho bảng `habitatmanager`
 --
 
-INSERT INTO `habitatmanager` (`ID`, `Name`, `State`, `Area`, `QuantityCurrent`, `Quantity`, `Img`) VALUES
-(15, 'Hổ', 'bad', 3, 3, 3, ''),
-(23, '1', 'Normal', 1, 1, 1, 'anh-dep-cute-002-1.jpg'),
-(24, 'Soi', 'bad', 24, 5, 10, 'boy.png'),
-(25, 'Ho', 'bad', 24, 5, 10, 'boy.png'),
-(26, 'Hooo', 'Super good', 24, 5, 10, 'home.png'),
-(28, 'Doi', 'bad', 24, 5, 10, 'boy.png'),
-(29, 'rong', 'Super good', 24, 5, 10, 'home.png'),
-(30, 'miu miu', 'Super good', 24, 5, 6, 'anh-dep-cute-002-1.jpg');
+INSERT INTO `habitatmanager` (`ID`, `Name`, `Area`, `QuantityCurrent`, `Quantity`, `Img`) VALUES
+(56, 'Hổ', 25, 10, 7, 'CaSauHabitat.jpg'),
+(57, 'Báo', 312, 0, 123, 'BaoHabitat.jpg'),
+(58, 'Chim', 25, 0, 7, 'ChimCongHabitat.jpg'),
+(59, 'Sói thảo nguyên', 25, 0, 5, 'SoiHabitat.jpeg'),
+(60, 'Huou Cao Co', 25, 0, 6, 'HuouCaoCoHabitat.jpg');
 
 -- --------------------------------------------------------
 
@@ -133,25 +144,19 @@ CREATE TABLE `tablechamsocdongvat` (
   `IDChamSoc` int(11) NOT NULL,
   `TenDongVat` varchar(255) NOT NULL,
   `LoaiChamSoc` varchar(255) NOT NULL,
-  `NgayChamSoc` datetime NOT NULL,
-  `TenNhanVien` varchar(255) NOT NULL,
-  `KetQua` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `tablechamsocsuckhoe`
---
-
-CREATE TABLE `tablechamsocsuckhoe` (
-  `IDChamSoc` int(11) NOT NULL,
-  `TenDongVat` varchar(255) NOT NULL,
-  `LoaiChamSoc` varchar(255) NOT NULL,
   `NgayChamSoc` date NOT NULL,
   `TenNhanVien` varchar(255) NOT NULL,
   `KetQua` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tablechamsocdongvat`
+--
+
+INSERT INTO `tablechamsocdongvat` (`IDChamSoc`, `TenDongVat`, `LoaiChamSoc`, `NgayChamSoc`, `TenNhanVien`, `KetQua`) VALUES
+(13, 'Nala', 'Tiêm dại', '2024-03-29', 'Arny', 'Cute'),
+(17, 'Nala', 'Tiêm dại', '2024-03-29', 'Arny', 'Cute'),
+(18, 'Nala', 'Tiêm dại', '2024-03-28', 'Arny', 'Cute');
 
 -- --------------------------------------------------------
 
@@ -178,7 +183,32 @@ INSERT INTO `tabledongvat` (`IDDongVat`, `TenDongVat`, `TenChuong`, `LoaiDongVat
 (153, 'Simba', 'Hổ', 'Sư tử', 5, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
 (154, 'Nala', 'Hổ', 'Sư tử', 4, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
 (155, 'Kiara', 'Hổ', 'Sư tử', 1, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
-(156, 'Timon', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg');
+(156, 'Timon', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
+(157, 'ví dụ như đây là tên siêu dài', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
+(158, 'a', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
+(159, 'b', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
+(160, 'c', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
+(161, '1', 'Hổ', 'Sư tử', 1, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
+(164, '2', 'Hổ', '1', 1, 'Đực', 'Khoẻ mạnh', '');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tableloaive`
+--
+
+CREATE TABLE `tableloaive` (
+  `IDLoaiVe` int(11) NOT NULL,
+  `TenLoaiVe` varchar(255) NOT NULL,
+  `KhuVuc` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tableloaive`
+--
+
+INSERT INTO `tableloaive` (`IDLoaiVe`, `TenLoaiVe`, `KhuVuc`) VALUES
+(1, '1', '1');
 
 -- --------------------------------------------------------
 
@@ -227,9 +257,9 @@ CREATE TABLE `thucan` (
 --
 
 INSERT INTO `thucan` (`IDThucAN`, `TenThucAn`, `LoaiThucAn`, `IdNCC`, `IdDongVat`, `SoLuong`, `HanThucAn`) VALUES
-(8, 'Cám', 'Đồ khô', 1, 1, 199, '2027'),
-(11, 'Chuối', 'Hoa quả', 3, 2, 100, '2027'),
-(12, 'Dâu Tây', 'Hoa Quả', 4, 5, 3344, '2025'),
+(8, 'Cám', 'Đồ khô', 1, 153, 199, '2027'),
+(11, 'Chuối', 'Hoa quả', 3, 156, 100, '2027'),
+(12, 'Dâu Tây', 'Hoa Quả', 4, 159, 3344, '2025'),
 (13, 'Cam', 'Hoa Quả', 5, 2, 333, '2025'),
 (14, 'Nhooo', 'Hoa quả', 6, 4, 444, '2026'),
 (15, 'Quýt', 'Hoa quả', 7, 6, 555, '2026'),
@@ -245,7 +275,8 @@ INSERT INTO `thucan` (`IDThucAN`, `TenThucAn`, `LoaiThucAn`, `IdNCC`, `IdDongVat
 (25, 'Rau muống', 'Rau củ', 9, 14, 222, '2022'),
 (26, 'Con Cò', 'Đồ Khô', 1, 13, 33, '2028'),
 (27, 'Thịt vịt', 'Đồ sống', 2, 16, 22, '2023'),
-(28, 'Hạt Điều', 'Đồ khô', 1, 34, 333, '2024');
+(28, 'Hạt Điều', 'Đồ khô', 1, 34, 333, '2024'),
+(30, 'Cám', 'Đồ khô', 1, 1, 199, '2027');
 
 -- --------------------------------------------------------
 
@@ -279,6 +310,14 @@ INSERT INTO `vethamquan` (`IdVe`, `IDNhanVien`, `TenVe`, `LoaiVe`, `GiaVe`, `SoL
 --
 
 --
+-- Chỉ mục cho bảng `envmanager`
+--
+ALTER TABLE `envmanager`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Staff` (`Staff`),
+  ADD KEY `envmanager_ibfk_2` (`IDHabitat`);
+
+--
 -- Chỉ mục cho bảng `habitatmanager`
 --
 ALTER TABLE `habitatmanager`
@@ -302,12 +341,6 @@ ALTER TABLE `nhanvien`
 -- Chỉ mục cho bảng `tablechamsocdongvat`
 --
 ALTER TABLE `tablechamsocdongvat`
-  ADD PRIMARY KEY (`IDChamSoc`);
-
---
--- Chỉ mục cho bảng `tablechamsocsuckhoe`
---
-ALTER TABLE `tablechamsocsuckhoe`
   ADD PRIMARY KEY (`IDChamSoc`),
   ADD KEY `TenDongVat` (`TenDongVat`);
 
@@ -316,8 +349,14 @@ ALTER TABLE `tablechamsocsuckhoe`
 --
 ALTER TABLE `tabledongvat`
   ADD PRIMARY KEY (`IDDongVat`),
-  ADD KEY `TenChuong` (`TenChuong`),
-  ADD KEY `TenDongVat` (`TenDongVat`);
+  ADD KEY `TenDongVat` (`TenDongVat`),
+  ADD KEY `TenChuong` (`TenChuong`);
+
+--
+-- Chỉ mục cho bảng `tableloaive`
+--
+ALTER TABLE `tableloaive`
+  ADD PRIMARY KEY (`IDLoaiVe`);
 
 --
 -- Chỉ mục cho bảng `taikhoan`
@@ -346,16 +385,22 @@ ALTER TABLE `vethamquan`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `envmanager`
+--
+ALTER TABLE `envmanager`
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
 -- AUTO_INCREMENT cho bảng `habitatmanager`
 --
 ALTER TABLE `habitatmanager`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT cho bảng `ncc`
 --
 ALTER TABLE `ncc`
-  MODIFY `IdNCC` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `IdNCC` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `nhanvien`
@@ -367,19 +412,19 @@ ALTER TABLE `nhanvien`
 -- AUTO_INCREMENT cho bảng `tablechamsocdongvat`
 --
 ALTER TABLE `tablechamsocdongvat`
-  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT cho bảng `tablechamsocsuckhoe`
---
-ALTER TABLE `tablechamsocsuckhoe`
-  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
+  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+
+--
+-- AUTO_INCREMENT cho bảng `tableloaive`
+--
+ALTER TABLE `tableloaive`
+  MODIFY `IDLoaiVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `taikhoan`
@@ -391,7 +436,7 @@ ALTER TABLE `taikhoan`
 -- AUTO_INCREMENT cho bảng `thucan`
 --
 ALTER TABLE `thucan`
-  MODIFY `IDThucAN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `IDThucAN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `vethamquan`
@@ -404,16 +449,22 @@ ALTER TABLE `vethamquan`
 --
 
 --
--- Các ràng buộc cho bảng `tablechamsocsuckhoe`
+-- Các ràng buộc cho bảng `envmanager`
 --
-ALTER TABLE `tablechamsocsuckhoe`
-  ADD CONSTRAINT `tablechamsocsuckhoe_ibfk_1` FOREIGN KEY (`TenDongVat`) REFERENCES `tabledongvat` (`TenDongVat`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `envmanager`
+  ADD CONSTRAINT `envmanager_ibfk_2` FOREIGN KEY (`IDHabitat`) REFERENCES `habitatmanager` (`Name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `tablechamsocdongvat`
+--
+ALTER TABLE `tablechamsocdongvat`
+  ADD CONSTRAINT `tablechamsocdongvat_ibfk_1` FOREIGN KEY (`TenDongVat`) REFERENCES `tabledongvat` (`TenDongVat`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  ADD CONSTRAINT `tabledongvat_ibfk_1` FOREIGN KEY (`TenChuong`) REFERENCES `habitatmanager` (`Name`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `tabledongvat_ibfk_1` FOREIGN KEY (`TenChuong`) REFERENCES `habitatmanager` (`Name`);
 
 --
 -- Các ràng buộc cho bảng `taikhoan`

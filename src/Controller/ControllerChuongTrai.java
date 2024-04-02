@@ -5,6 +5,7 @@
 package Controller;
 
 import Model.ModelChuongTrai;
+import Model.ModelDongVat;
 import Utils.MyFileChooser;
 import com.google.gson.Gson;
 import java.awt.event.MouseEvent;
@@ -15,11 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -28,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.UIManager;
 import Utils.XuLyFileExcel;
 import View.ViewChuongTrai;
+import View.ViewMoiTruong;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,6 +43,24 @@ public class ControllerChuongTrai {
     ViewChuongTrai view;
     private File fileImg = null;
     String apiString = Utils.Utility.apiString + "habitat/";
+
+    public ControllerChuongTrai() {
+    }
+
+    public ControllerChuongTrai(ViewChuongTrai view) {
+        this.view = view;
+        UpdateSoluongDongVat();
+        fillData("");
+        CLICKTABLE();
+        BTNADD();
+        BTNSAVE();
+        BTNDELETE();
+        BTNSEARCH();
+        nhapExcel();
+        xuatExcel();
+        AddImg();
+        BTNENV();
+    }
 
     public ArrayList<ModelChuongTrai> getListHabitat() {
         ArrayList<ModelChuongTrai> habitatArrayList = new ArrayList<>();
@@ -75,37 +92,41 @@ public class ControllerChuongTrai {
     private void fillData(String search) {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
-        ArrayList<String> loaiListRaw = new ArrayList<>();
-        ArrayList<String> TrangThaiListRaw = new ArrayList<>();
-        view.getTfName().removeAllItems();
 
         tableModel.setRowCount(0);
         ArrayList<ModelChuongTrai> listHabitat;
+        ControllerDongVat controllerDongVat = new ControllerDongVat();
+
         listHabitat = getListHabitat();
-        if (!search.equals("")) {
-            for (ModelChuongTrai habitat : listHabitat) {
-                loaiListRaw.add(habitat.getName());
-                TrangThaiListRaw.add(habitat.getState());
-                if (habitat.toString().contains(search)) {
-                    tableModel.addRow(new Object[]{
-                        habitat.getId(),
-                        habitat.getName(),
-                        habitat.getState(),
-                        habitat.getArea(),
-                        habitat.getQuantity_current(),
-                        habitat.getQuantity(),
-                        habitat.getImg()
-                    });
+        for (ModelChuongTrai habitat : listHabitat) {
+
+            habitat.setQuantity_current(0);
+            controllerDongVat.getListDongVat(new ControllerDongVat.OnGetListDongVatListener() {
+                @Override
+                public void onSuccess(ArrayList<ModelDongVat> dongVats) {
+                    for (ModelDongVat dongVat : dongVats) {
+                        if (dongVat.getTenChuong().equals(habitat.getName())) {
+                            habitat.setQuantity_current(habitat.getQuantity_current() + 1);
+                        }
+                    }
                 }
-            }
-        } else {
-            for (ModelChuongTrai habitat : listHabitat) {
-                loaiListRaw.add(habitat.getName());
-                TrangThaiListRaw.add(habitat.getState());
+
+                @Override
+                public void onStart() {
+                }
+
+                @Override
+                public void onFailure() {
+                }
+            });
+
+        }
+
+        for (ModelChuongTrai habitat : listHabitat) {
+            if (habitat.toString().contains(search)) {
                 tableModel.addRow(new Object[]{
                     habitat.getId(),
                     habitat.getName(),
-                    habitat.getState(),
                     habitat.getArea(),
                     habitat.getQuantity_current(),
                     habitat.getQuantity(),
@@ -113,42 +134,10 @@ public class ControllerChuongTrai {
                 });
             }
         }
+
         table.setModel(tableModel);
 
-        HashSet<String> setWithoutDuplicates = new HashSet<>(loaiListRaw);
-        HashSet<String> setWithoutDuplicates2 = new HashSet<>(TrangThaiListRaw);
-        ArrayList<String> loaiList = new ArrayList<>(setWithoutDuplicates);
-        ArrayList<String> TrangThaiList = new ArrayList<>(setWithoutDuplicates2);
-        Collections.sort(loaiList);
-        Collections.sort(TrangThaiList);
-
-        Utils.Utility.hideColumn(table, 6);
-
-        for (String loai : loaiList) {
-            view.getTfName().addItem(loai);
-        }
-        for (String trangThai : TrangThaiList) {
-            view.getTfState().addItem(trangThai);
-        }
-
         view.getLbImg().setIcon(getImg("image/Habitat/home.png"));
-    }
-
-    public ControllerChuongTrai() {
-    }
-
-    public ControllerChuongTrai(ViewChuongTrai view) {
-        this.view = view;
-        fillData("");
-        CLICKTABLE();
-        BTNADD();
-        BTNSAVE();
-        BTNDELETE();
-        BTNSEARCH();
-        nhapExcel();
-        xuatExcel();
-        AddImg();
-        BTNClear();
     }
 
     private void CLICKTABLE() {
@@ -159,6 +148,7 @@ public class ControllerChuongTrai {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                view.getBtnEnv().setEnabled(true);
                 int index = view.getTable().getSelectedRow();
                 try {
                     URL url = new URL(apiString + view.getTable().getValueAt(index, 0));
@@ -177,8 +167,7 @@ public class ControllerChuongTrai {
                     ModelChuongTrai habitatArray = gson.fromJson(response.toString(), ModelChuongTrai.class);
 
                     view.getTfID().setText(habitatArray.getId() + "");
-                    view.getTfName().setSelectedItem(habitatArray.getName());
-                    view.getTfState().setSelectedItem(habitatArray.getState());
+                    view.getTfName().setText(habitatArray.getName());
                     view.getTfArea().setText(habitatArray.getArea() + "");
                     view.getTfQuantityCurrent().setText(habitatArray.getQuantity_current() + "");
                     view.getTfQuantity().setText(habitatArray.getQuantity() + "");
@@ -208,16 +197,22 @@ public class ControllerChuongTrai {
 
     private void BTNADD() {
         view.getBtnAdd().addActionListener((e) -> {
-            String name = view.getTfName().getSelectedItem().toString();
-            String state = view.getTfState().getSelectedItem().toString();
+            int id = -1;
+            String name = view.getTfName().getText();
             float area = Float.parseFloat(view.getTfArea().getText());
-            int quantityCurrent = Integer.parseInt(view.getTfQuantityCurrent().getText());
+            int quantityCurrent = 0;
             int quantity = Integer.parseInt(view.getTfQuantity().getText());
             String anh = "";
             if (fileImg != null) {
                 anh = fileImg.getName();
             }
-            ModelChuongTrai habitat = new ModelChuongTrai(name, state, area, quantityCurrent, quantity, anh);
+
+            if (IsDuplicated(id, name)) {
+                JOptionPane.showMessageDialog(null, "Name is already exist", "ERROR DUPLICATED", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            ModelChuongTrai habitat = new ModelChuongTrai(name, area, quantityCurrent, quantity, anh);
 
             PostHabitat(habitat);
             SaveFileImg();
@@ -236,8 +231,7 @@ public class ControllerChuongTrai {
     private void BTNSAVE() {
         view.getBtnSave().addActionListener((e) -> {
             int id = Integer.parseInt(view.getTfID().getText());
-            String name = view.getTfName().getSelectedItem().toString();
-            String state = view.getTfState().getSelectedItem().toString();
+            String name = view.getTfName().getText();
             float area = Float.parseFloat(view.getTfArea().getText());
             int quantityCurrent = Integer.parseInt(view.getTfQuantityCurrent().getText());
             int quantity = Integer.parseInt(view.getTfQuantity().getText());
@@ -246,10 +240,15 @@ public class ControllerChuongTrai {
             if (fileImg != null) {
                 anh = fileImg.getName();
             }
-            ModelChuongTrai habitat = new ModelChuongTrai(name, state, area, quantityCurrent, quantity, anh);
+            ModelChuongTrai habitat = new ModelChuongTrai(name, area, quantityCurrent, quantity, anh);
             habitat.setId(id);
             Gson gson = new Gson();
             String jsonInputString = gson.toJson(habitat);
+
+            if (IsDuplicated(id, name)) {
+                JOptionPane.showMessageDialog(null, "Name is already exist", "ERROR DUPLICATED", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
 
             try {
                 URL url = new URL(apiString + id);
@@ -311,13 +310,12 @@ public class ControllerChuongTrai {
             int row = view.getTable().getRowCount();
             for (int i = 0; i < row; i++) {
                 String name = table.getValueAt(i, 1).toString();
-                String state = table.getValueAt(i, 2).toString();
-                float area = Float.parseFloat(table.getValueAt(i, 3).toString());
-                int quantityCurrent = Integer.parseInt(table.getValueAt(i, 4).toString());
-                int quantity = Integer.parseInt(table.getValueAt(i, 5).toString());
-                String img = table.getValueAt(i, 6).toString();
+                float area = Float.parseFloat(table.getValueAt(i, 2).toString());
+                int quantityCurrent = Integer.parseInt(table.getValueAt(i, 3).toString());
+                int quantity = Integer.parseInt(table.getValueAt(i, 4).toString());
+                String img = table.getValueAt(i, 5).toString();
 
-                PostHabitat(new ModelChuongTrai(name, state, area, quantityCurrent, quantity, img));
+                PostHabitat(new ModelChuongTrai(name, area, quantityCurrent, quantity, img));
             }
             fillData(view.getTfSearch().getText());
             view.Clear();
@@ -422,7 +420,94 @@ public class ControllerChuongTrai {
                 System.out.println("controller/luuFileAnh" + e.getMessage());
             }
         }
+    }
 
+    private boolean IsDuplicated(int id, String name) {
+        ArrayList<ModelChuongTrai> listHabitat;
+        listHabitat = getListHabitat();
+        for (ModelChuongTrai habitat : listHabitat) {
+            if (habitat.getId() == id && habitat.getName().equals(name)) {
+                return false;
+            } else if (habitat.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void BTNENV() {
+        view.getBtnEnv().addActionListener((e) -> {
+            String nameHabitat = view.getTfName().getText();
+            ViewMoiTruong v = new ViewMoiTruong();
+            new ControllerMoiTruong(v, nameHabitat);
+        });
+    }
+
+//     private void UpdateSoLuongChuongTrai(int id, String nameHabitat, boolean isAdd) {
+//        ArrayList<ModelChuongTrai> listhabitat = new ControllerChuongTrai().getListHabitat();
+//        for (ModelChuongTrai habitat : listhabitat) {
+//            if (habitat.getName().equals(nameHabitat)) {
+//                if (isAdd == true) {
+//                    habitat.setQuantity_current(habitat.getQuantity_current() + 1);
+//
+//                } else {
+//                    habitat.setQuantity_current(habitat.getQuantity_current() - 1);
+//                }
+//            }
+//        }
+//    }
+    public void UpdateSoluongDongVat() {
+        ControllerDongVat controllerDongVat = new ControllerDongVat();
+        ArrayList<ModelChuongTrai> listHabitat;
+        listHabitat = getListHabitat();
+        for (ModelChuongTrai habitat : listHabitat) {
+
+            habitat.setQuantity_current(0);
+            controllerDongVat.getListDongVat(new ControllerDongVat.OnGetListDongVatListener() {
+                @Override
+                public void onSuccess(ArrayList<ModelDongVat> dongVats) {
+                    for (ModelDongVat dongVat : dongVats) {
+                        if (dongVat.getTenChuong().equals(habitat.getName())) {
+                            habitat.setQuantity_current(habitat.getQuantity_current() + 1);
+                        }
+                    }
+                    ModelChuongTrai newhabitat = new ModelChuongTrai(habitat.getName(), habitat.getArea(), 
+                            habitat.getQuantity_current(), habitat.getQuantity(), habitat.getImg());
+                    newhabitat.setId(habitat.getId());
+                    Gson gson = new Gson();
+                    String jsonInputString = gson.toJson(habitat);
+
+                    try {
+                        URL url = new URL(apiString + newhabitat.getId());
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("PUT");
+                        connection.setRequestProperty("Content-Type", "application/json");
+                        connection.setDoOutput(true);
+
+                        try (OutputStream outputStream = connection.getOutputStream()) {
+                            byte[] input = jsonInputString.getBytes("utf-8");
+                            outputStream.write(input, 0, input.length);
+                        }
+
+                        connection.getResponseCode();
+                        connection.disconnect();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    SaveFileImg();
+                }
+
+                @Override
+                public void onStart() {
+                }
+
+                @Override
+                public void onFailure() {
+                }
+            });
+
+        }
     }
 
 }

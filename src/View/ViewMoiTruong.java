@@ -4,18 +4,14 @@
  */
 package View;
 
-import Controller.ControllerChuongTrai;
+import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,37 +22,34 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Duong
  */
-public class ViewChuongTrai extends JFrame {
+public class ViewMoiTruong extends JFrame {
 
-    ControllerChuongTrai c = new ControllerChuongTrai();
+    private JLabel label = new JLabel("Quản lý Môi Trường", SwingConstants.CENTER);
 
-    private JLabel label = new JLabel("Quản lý Chuồng Trại", SwingConstants.CENTER);
-
-    private String[] lableStrings = {"Mã", "Tên", "Diện Tích (m2)", "Số lượng hiện tại", "Số lượng tối đa", "Ảnh"};
-
+    private String[] lableStrings = {"Mã", "Tên chuồng","Tên nhân viên","Ngày tháng", "Trạng thái", "Mô tả chi tiết"};
+    private String[] statestrings = {"Tốt", "Bình thường", "Tệ"};
+    
     private JLabel lbID = new JLabel(lableStrings[0]);
-    private JLabel lbName = new JLabel(lableStrings[1]);
-    private JLabel lbArea = new JLabel(lableStrings[2]);
-    private JLabel lbQuantityCurrent = new JLabel(lableStrings[3]);
-    private JLabel lbQuantity = new JLabel(lableStrings[4]);
+    private JLabel lbIDHabitat = new JLabel(lableStrings[1]);
+    private JLabel lbStaff = new JLabel(lableStrings[2]);
+    private JLabel lbDate = new JLabel(lableStrings[3]);
+    private JLabel lbState = new JLabel(lableStrings[4]);
+    private JLabel lbDescription = new JLabel(lableStrings[5]);
 
-    private JLabel lbImg = new JLabel();
-
-    // Text field
     private JTextField tfID = new JTextField(20);
-    private JTextField tfName = new JTextField(20);
-    private JTextField tfArea = new JTextField(20);
-    private JTextField tfQuantityCurrent = new JTextField(20);
-    private JTextField tfQuantity = new JTextField(20);
+    private JTextField tfIDHabitat = new JTextField(20);
+    private JComboBox<String> tfStaff = new JComboBox();
+    private JDateChooser tfDate = new JDateChooser();
+    private JComboBox<String> tfState = new JComboBox(statestrings);
+    private JTextField tfDescription = new JTextField(20);
     private JTextField tfSearch = new JTextField(20);
-    // Button
+
     private JButton btnAdd = new JButton("Thêm");
     private JButton btnDelete = new JButton("Xoá");
     private JButton btnSave = new JButton("Lưu");
@@ -64,10 +57,6 @@ public class ViewChuongTrai extends JFrame {
     private JButton btnInput = new JButton("Nhập dữ liệu");
     private JButton btnOutPut = new JButton("Xuất dữ liệu");
     private JButton btnLoad = new JButton("Làm mới");
-    private JButton btnImageChange = new JButton("Đổi ảnh");
-    private JButton btnEnv = new JButton("Khảo sát môi trường");
-
-    private JPanel pnImg = new JPanel();
 
     // Table
     private JTable table = new JTable();
@@ -80,12 +69,9 @@ public class ViewChuongTrai extends JFrame {
         }
     };
 
-    public ViewChuongTrai() {
-        setTitle("Quản lý động vật");
-        setSize(1000, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        new Menu(this);
+    public ViewMoiTruong() {
+        setTitle("Quản lý môi trường");
+        setSize(800, 600);
 
         // Panel chứa table
         JPanel tablePanel = new JPanel(new BorderLayout());
@@ -96,12 +82,6 @@ public class ViewChuongTrai extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
-
-        pnImg.setPreferredSize(new Dimension((int) pnImg.getPreferredSize().getWidth(), 220));
-        lbImg.setPreferredSize(new Dimension(200, 200));
-        lbImg.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        lbImg.setIcon(c.getImg(""));
-        pnImg.add(lbImg);
 
         // Thêm label "Quản lý chuồng trại" vào panel, căn giữa
         gbc.gridx = 0;
@@ -123,39 +103,33 @@ public class ViewChuongTrai extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        inputPanel.add(lbName, gbc);
+        inputPanel.add(lbIDHabitat, gbc);
         gbc.gridx = 1;
-        inputPanel.add(tfName, gbc);
-
+        inputPanel.add(tfIDHabitat, gbc);
+        
         gbc.gridx = 0;
         gbc.gridy = 3;
-        inputPanel.add(lbArea, gbc);
+        inputPanel.add(lbStaff, gbc);
         gbc.gridx = 1;
-        inputPanel.add(tfArea, gbc);
+        inputPanel.add(tfStaff, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        inputPanel.add(lbQuantityCurrent, gbc);
+        inputPanel.add(lbDate, gbc);
         gbc.gridx = 1;
-        inputPanel.add(tfQuantityCurrent, gbc);
+        inputPanel.add(tfDate, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
-        inputPanel.add(lbQuantity, gbc);
+        inputPanel.add(lbState, gbc);
         gbc.gridx = 1;
-        inputPanel.add(tfQuantity, gbc);
+        inputPanel.add(tfState, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        inputPanel.add(pnImg, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        inputPanel.add(btnImageChange, gbc);
+        inputPanel.add(lbDescription, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(tfDescription, gbc);
 
         // Panel chứa button
         JPanel buttonPanelSouth = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -169,7 +143,6 @@ public class ViewChuongTrai extends JFrame {
         buttonPanelNorth.add(btnLoad);
         buttonPanelNorth.add(btnInput);
         buttonPanelNorth.add(btnOutPut);
-        buttonPanelNorth.add(btnEnv);
 
         // Thêm các panel vào split pane
         splitPane.setLeftComponent(tablePanel);
@@ -185,15 +158,16 @@ public class ViewChuongTrai extends JFrame {
         Font font = new Font("Arial", Font.PLAIN, 14);
         label.setFont(new Font("Arial", Font.BOLD, 20));
         lbID.setFont(font);
-        lbName.setFont(font);
-        lbArea.setFont(font);
-        lbQuantityCurrent.setFont(font);
-        lbQuantity.setFont(font);
+        lbIDHabitat.setFont(font);
+        lbState.setFont(font);
+        lbDescription.setFont(font);
         tfID.setFont(font);
-        tfName.setFont(font);
-        tfArea.setFont(font);
-        tfQuantityCurrent.setFont(font);
-        tfQuantity.setFont(font);
+        tfIDHabitat.setFont(font);
+        tfStaff.setFont(font);
+        tfDate.setFont(font);
+        tfState.setFont(font);
+        tfDescription.setFont(font);
+        tfDescription.setPreferredSize(new Dimension(200, 100));
         tfSearch.setFont(font);
         btnAdd.setFont(font);
         btnDelete.setFont(font);
@@ -202,113 +176,171 @@ public class ViewChuongTrai extends JFrame {
         btnInput.setFont(font);
         btnOutPut.setFont(font);
         btnLoad.setFont(font);
-        btnImageChange.setFont(font);
-        btnEnv.setFont(font);
 
         tableModel.addColumn(lableStrings[0]);
         tableModel.addColumn(lableStrings[1]);
         tableModel.addColumn(lableStrings[2]);
         tableModel.addColumn(lableStrings[3]);
         tableModel.addColumn(lableStrings[4]);
+        tableModel.addColumn(lableStrings[5]);
 
         setLocationRelativeTo(null);
         setVisible(true);
 
         tfID.setEditable(false);
-        tfName.setEditable(true);
-        tfQuantityCurrent.setEditable(false);
-        btnEnv.setEnabled(false);
+        tfIDHabitat.setEditable(false);
     }
 
-    public JButton getBtnEnv() {
-        return btnEnv;
+    public JDateChooser getTfDate() {
+        return tfDate;
     }
 
-    public void setBtnEnv(JButton btnEnv) {
-        this.btnEnv = btnEnv;
+    public void setTfDate(JDateChooser tfDate) {
+        this.tfDate = tfDate;
     }
 
-    public void Clear() {
-        tfArea.setText("");
-        tfQuantity.setText("");
-        tfQuantityCurrent.setText("");
-        btnEnv.setEnabled(false);
+    public String[] getStatestrings() {
+        return statestrings;
     }
 
-    public void addImageChangeButtonListener(ActionListener listener) {
-        btnImageChange.addActionListener(listener);
+    public void setStatestrings(String[] statestrings) {
+        this.statestrings = statestrings;
     }
 
-    public void addLoadButtonListener(ActionListener listener) {
-        btnLoad.addActionListener(listener);
+    public JLabel getLbStaff() {
+        return lbStaff;
     }
 
-    public void addAddButtonListener(ActionListener listener) {
-        btnAdd.addActionListener(listener);
+    public void setLbStaff(JLabel lbStaff) {
+        this.lbStaff = lbStaff;
     }
 
-    public void addSaveButtonListener(ActionListener listener) {
-        btnSave.addActionListener(listener);
+    public JLabel getLbDate() {
+        return lbDate;
     }
 
-    public void addDeleteButtonListener(ActionListener listener) {
-        btnDelete.addActionListener(listener);
+    public void setLbDate(JLabel lbDate) {
+        this.lbDate = lbDate;
     }
 
-    public void addSearchButtonListener(ActionListener listener) {
-        btnSearch.addActionListener(listener);
+    public JComboBox<String> getTfStaff() {
+        return tfStaff;
     }
 
-    public void addTableRowClickListener(MouseListener listener) {
-        table.addMouseListener(listener);
-    }
-
-    public void addListSelectionListener(ListSelectionListener listener) {
-        table.getSelectionModel().addListSelectionListener(listener);
+    public void setTfStaff(JComboBox<String> tfStaff) {
+        this.tfStaff = tfStaff;
     }
 
     public JLabel getLabel() {
         return label;
     }
 
+    public void setLabel(JLabel label) {
+        this.label = label;
+    }
+
     public String[] getLableStrings() {
         return lableStrings;
+    }
+
+    public void setLableStrings(String[] lableStrings) {
+        this.lableStrings = lableStrings;
     }
 
     public JLabel getLbID() {
         return lbID;
     }
 
-    public JLabel getLbName() {
-        return lbName;
-    }
-    
-    public JLabel getLbArea() {
-        return lbArea;
+    public void setLbID(JLabel lbID) {
+        this.lbID = lbID;
     }
 
-    public JLabel getLbQuantityCurrent() {
-        return lbQuantityCurrent;
+    public JLabel getLbIDHabitat() {
+        return lbIDHabitat;
     }
 
-    public JLabel getLbQuantity() {
-        return lbQuantity;
+    public void setLbIDHabitat(JLabel lbIDHabitat) {
+        this.lbIDHabitat = lbIDHabitat;
     }
 
-    public JLabel getLbImg() {
-        return lbImg;
+    public JLabel getLbState() {
+        return lbState;
+    }
+
+    public void setLbState(JLabel lbState) {
+        this.lbState = lbState;
+    }
+
+    public JLabel getLbDescription() {
+        return lbDescription;
+    }
+
+    public void setLbDescription(JLabel lbDescription) {
+        this.lbDescription = lbDescription;
     }
 
     public JTextField getTfID() {
         return tfID;
     }
 
-    public JTextField getTfName() {
-        return tfName;
+    public void setTfID(JTextField tfID) {
+        this.tfID = tfID;
     }
 
-    public void setTfName(JTextField tfName) {
-        this.tfName = tfName;
+    public JTextField getTfIDHabitat() {
+        return tfIDHabitat;
+    }
+
+    public void setTfIDHabitat(JTextField tfIDHabitat) {
+        this.tfIDHabitat = tfIDHabitat;
+    }
+
+    public JComboBox<String> getTfState() {
+        return tfState;
+    }
+
+    public void setTfState(JComboBox<String> tfState) {
+        this.tfState = tfState;
+    }
+
+    public JTextField getTfDescription() {
+        return tfDescription;
+    }
+
+    public void setTfDescription(JTextField tfDescription) {
+        this.tfDescription = tfDescription;
+    }
+
+    public JTextField getTfSearch() {
+        return tfSearch;
+    }
+
+    public void setTfSearch(JTextField tfSearch) {
+        this.tfSearch = tfSearch;
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public void setBtnAdd(JButton btnAdd) {
+        this.btnAdd = btnAdd;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
+    }
+
+    public void setBtnDelete(JButton btnDelete) {
+        this.btnDelete = btnDelete;
+    }
+
+    public JButton getBtnSave() {
+        return btnSave;
+    }
+
+    public void setBtnSave(JButton btnSave) {
+        this.btnSave = btnSave;
     }
 
     public JButton getBtnSearch() {
@@ -319,6 +351,14 @@ public class ViewChuongTrai extends JFrame {
         this.btnSearch = btnSearch;
     }
 
+    public JButton getBtnInput() {
+        return btnInput;
+    }
+
+    public void setBtnInput(JButton btnInput) {
+        this.btnInput = btnInput;
+    }
+
     public JButton getBtnOutPut() {
         return btnOutPut;
     }
@@ -327,68 +367,44 @@ public class ViewChuongTrai extends JFrame {
         this.btnOutPut = btnOutPut;
     }
 
-    public JTextField getTfArea() {
-        return tfArea;
-    }
-
-    public JTextField getTfQuantityCurrent() {
-        return tfQuantityCurrent;
-    }
-
-    public JTextField getTfQuantity() {
-        return tfQuantity;
-    }
-
-    public JTextField getTfSearch() {
-        return tfSearch;
-    }
-
-    public JButton getBtnAdd() {
-        return btnAdd;
-    }
-
-    public JButton getBtnDelete() {
-        return btnDelete;
-    }
-
-    public JButton getBtnSave() {
-        return btnSave;
-    }
-
-    public JButton getBtnTimKiem() {
-        return btnSearch;
-    }
-
-    public JButton getBtnInput() {
-        return btnInput;
-    }
-
-    public JButton getBtnOutput() {
-        return btnOutPut;
-    }
-
     public JButton getBtnLoad() {
         return btnLoad;
     }
 
-    public JButton getBtnImageChange() {
-        return btnImageChange;
-    }
-
-    public JPanel getPnImg() {
-        return pnImg;
+    public void setBtnLoad(JButton btnLoad) {
+        this.btnLoad = btnLoad;
     }
 
     public JTable getTable() {
         return table;
     }
 
+    public void setTable(JTable table) {
+        this.table = table;
+    }
+
     public JSplitPane getSplitPane() {
         return splitPane;
+    }
+
+    public void setSplitPane(JSplitPane splitPane) {
+        this.splitPane = splitPane;
     }
 
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
 
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public void Clear() {
+        tfID.setText("");
+        tfStaff.setSelectedItem(null);
+        tfDescription.setText("");
+        tfSearch.setText("");
+        tfDate.setDate(null);
+    }
+    
 }

@@ -9,18 +9,16 @@ package Model;
  * @author Duong
  */
 public class ModelChuongTrai {
-
-    private String Name, Img, State;
-    private int ID, QuantityCurrent, Quantity;
+    private String Name,Img;
+    private int ID,QuantityCurrent,Quantity;
     private float Area;
 
     public ModelChuongTrai() {
     }
 
-    public ModelChuongTrai(String name, String state, float area, int quantity_current, int quantity, String img) {
+    public ModelChuongTrai(String name, float area, int quantity_current, int quantity, String img) {
         this.Name = name;
         this.Img = img;
-        this.State = state;
         this.QuantityCurrent = quantity_current;
         this.Quantity = quantity;
         this.Area = area;
@@ -28,7 +26,7 @@ public class ModelChuongTrai {
 
     @Override
     public String toString() {
-        return (Name + ID + State + Area + Quantity).toLowerCase();
+        return (Name+ID+Area+Quantity).toLowerCase();
     }
 
     public String getName() {
@@ -46,15 +44,7 @@ public class ModelChuongTrai {
     public void setImg(String Img) {
         this.Img = Img;
     }
-
-    public String getState() {
-        return State;
-    }
-
-    public void setState(String State) {
-        this.State = State;
-    }
-
+    
     public int getId() {
         return ID;
     }
