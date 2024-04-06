@@ -60,6 +60,7 @@ public class ControllerChuongTrai {
         xuatExcel();
         AddImg();
         BTNENV();
+        BTNClear();
     }
 
     public ArrayList<ModelChuongTrai> getListHabitat() {
@@ -98,29 +99,6 @@ public class ControllerChuongTrai {
         ControllerDongVat controllerDongVat = new ControllerDongVat();
 
         listHabitat = getListHabitat();
-        for (ModelChuongTrai habitat : listHabitat) {
-
-            habitat.setQuantity_current(0);
-            controllerDongVat.getListDongVat(new ControllerDongVat.OnGetListDongVatListener() {
-                @Override
-                public void onSuccess(ArrayList<ModelDongVat> dongVats) {
-                    for (ModelDongVat dongVat : dongVats) {
-                        if (dongVat.getTenChuong().equals(habitat.getName())) {
-                            habitat.setQuantity_current(habitat.getQuantity_current() + 1);
-                        }
-                    }
-                }
-
-                @Override
-                public void onStart() {
-                }
-
-                @Override
-                public void onFailure() {
-                }
-            });
-
-        }
 
         for (ModelChuongTrai habitat : listHabitat) {
             if (habitat.toString().contains(search)) {
@@ -197,6 +175,10 @@ public class ControllerChuongTrai {
 
     private void BTNADD() {
         view.getBtnAdd().addActionListener((e) -> {
+            if (view.CheckNull()) {
+                JOptionPane.showMessageDialog(null, "Nhập đủ dữ liệu đi", "ERROR DUPLICATED", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
             int id = -1;
             String name = view.getTfName().getText();
             float area = Float.parseFloat(view.getTfArea().getText());
@@ -230,6 +212,10 @@ public class ControllerChuongTrai {
 
     private void BTNSAVE() {
         view.getBtnSave().addActionListener((e) -> {
+            if (view.CheckNull() == true) {
+                JOptionPane.showMessageDialog(null, "Nhập đủ dữ liệu đi", "ERROR DUPLICATED", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
             int id = Integer.parseInt(view.getTfID().getText());
             String name = view.getTfName().getText();
             float area = Float.parseFloat(view.getTfArea().getText());
@@ -313,9 +299,9 @@ public class ControllerChuongTrai {
                 float area = Float.parseFloat(table.getValueAt(i, 2).toString());
                 int quantityCurrent = Integer.parseInt(table.getValueAt(i, 3).toString());
                 int quantity = Integer.parseInt(table.getValueAt(i, 4).toString());
-                String img = table.getValueAt(i, 5).toString();
+//                String img = table.getValueAt(i, 5).toString();
 
-                PostHabitat(new ModelChuongTrai(name, area, quantityCurrent, quantity, img));
+                PostHabitat(new ModelChuongTrai(name, area, quantityCurrent, quantity, ""));
             }
             fillData(view.getTfSearch().getText());
             view.Clear();
@@ -423,12 +409,8 @@ public class ControllerChuongTrai {
     }
 
     private boolean IsDuplicated(int id, String name) {
-        ArrayList<ModelChuongTrai> listHabitat;
-        listHabitat = getListHabitat();
-        for (ModelChuongTrai habitat : listHabitat) {
-            if (habitat.getId() == id && habitat.getName().equals(name)) {
-                return false;
-            } else if (habitat.getName().equals(name)) {
+        for (ModelChuongTrai habitat : getListHabitat()) {
+            if (habitat.getId() != id && habitat.getName().equals(name)) {
                 return true;
             }
         }
@@ -458,20 +440,18 @@ public class ControllerChuongTrai {
 //    }
     public void UpdateSoluongDongVat() {
         ControllerDongVat controllerDongVat = new ControllerDongVat();
-        ArrayList<ModelChuongTrai> listHabitat;
-        listHabitat = getListHabitat();
-        for (ModelChuongTrai habitat : listHabitat) {
+        for (ModelChuongTrai habitat : getListHabitat()) {
 
             habitat.setQuantity_current(0);
             controllerDongVat.getListDongVat(new ControllerDongVat.OnGetListDongVatListener() {
                 @Override
                 public void onSuccess(ArrayList<ModelDongVat> dongVats) {
                     for (ModelDongVat dongVat : dongVats) {
-                        if (dongVat.getTenChuong().equals(habitat.getName())) {
+                        if (dongVat.getTenChuong() != null && dongVat.getTenChuong().equals(habitat.getName())) {
                             habitat.setQuantity_current(habitat.getQuantity_current() + 1);
                         }
                     }
-                    ModelChuongTrai newhabitat = new ModelChuongTrai(habitat.getName(), habitat.getArea(), 
+                    ModelChuongTrai newhabitat = new ModelChuongTrai(habitat.getName(), habitat.getArea(),
                             habitat.getQuantity_current(), habitat.getQuantity(), habitat.getImg());
                     newhabitat.setId(habitat.getId());
                     Gson gson = new Gson();

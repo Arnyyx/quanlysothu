@@ -36,11 +36,11 @@ public class ControllerMoiTruong {
     ViewMoiTruong view;
     ControllerChuongTrai conHabitat = new ControllerChuongTrai();
     ControllerNhanVien conNhanvien = new ControllerNhanVien();
-    private File fileImg = null;
     String apiString = Utils.Utility.apiString + "environment/";
     
     public ControllerMoiTruong(ViewMoiTruong view, String name) {
         this.view = view;
+        view.Clear();
         nameHabitatCurrent=name;
         fillData("");
         CLICKTABLE();
@@ -83,7 +83,6 @@ public class ControllerMoiTruong {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
         view.getTfStaff().removeAllItems();
-        view.getTfStaff().addItem("Nhân viên ngoài");
         view.getTfIDHabitat().setText(nameHabitatCurrent);
 
         tableModel.setRowCount(0);

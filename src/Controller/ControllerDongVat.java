@@ -44,22 +44,24 @@ import javax.swing.table.DefaultTableModel;
  * @author ACER
  */
 public class ControllerDongVat {
-
+    
     private ViewDongVat view;
     private ModelDongVat dongVat = new ModelDongVat();
+    ControllerChuongTrai chuongTrai = new ControllerChuongTrai();
     private File fileAnhDongVat = null;
     String apiString = Utils.Utility.apiString + "dongVat/";
     boolean isDuplicate = false;
-
+    
     public ControllerDongVat() {
     }
-
+    
     public ControllerDongVat(ViewDongVat viewDongVat) {
         view = viewDongVat;
         fillData("");
-
+        
         view.getBtnAdd().addActionListener((e) -> {
             dongVat = getDongVatFromTextField();
+            dongVat.setIDDongVat(-1);
             if (dongVat == null) {
                 return;
             }
@@ -67,11 +69,15 @@ public class ControllerDongVat {
                 JOptionPane.showMessageDialog(null, "Động vật đã tồn tại");
                 return;
             }
+            if (isHatbitatFull(dongVat.getTenChuong())) {
+                JOptionPane.showMessageDialog(null, "Chuồng " + dongVat.getTenChuong() + " đã đầy");
+                return;
+            }
             int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn thêm động vật mới? ", "Thêm động vật mới?", JOptionPane.WARNING_MESSAGE);
             if (dialogResult != JOptionPane.YES_OPTION) {
                 return;
             }
-
+            
             themDongVat(dongVat);
             luuFileAnh();
             fillData(view.getTfTimKiem().getText());
@@ -96,6 +102,10 @@ public class ControllerDongVat {
                 JOptionPane.showMessageDialog(null, "Động vật đã tồn tại");
                 return;
             }
+            if (isHatbitatFull(getDongVatFromTextField().getTenChuong())) {
+                JOptionPane.showMessageDialog(null, "Chuồng " + getDongVatFromTextField().getTenChuong() + " đã đầy");
+                return;
+            }
             luuDongVat();
         });
         view.getBtnTimKiem().addActionListener((e) -> {
@@ -110,77 +120,78 @@ public class ControllerDongVat {
             nhapExcel();
         });
     }
-
+    
     private MouseListener xuLyCLickTableDongVat() {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
             }
-
+            
             @Override
             public void mousePressed(MouseEvent e) {
                 JTable table = view.getTable();
                 int row = table.getSelectedRow();
                 if (row > -1) {
-
+                    
                     getDongVat(Integer.parseInt(table.getValueAt(row, 0).toString()), new OnGetDongVatListener() {
                         @Override
                         public void onSuccess(ModelDongVat dongVat) {
                             view.getTfID().setText(dongVat.getIDDongVat() + "");
                             view.getTfTen().setText(dongVat.getTenDongVat());
+                            view.getTfTenChuong().setSelectedItem(dongVat.getTenChuong());
                             view.getTfLoai().setSelectedItem(dongVat.getLoaiDongVat());
                             view.getTfTuoi().setText(dongVat.getTuoiDongVat() + "");
                             view.getTfGioiTinh().setSelectedItem(dongVat.getGioiTinhDongVat());
                             view.getTfTrangThai().setSelectedItem(dongVat.getTrangThaiDongVat());
                             view.getLbAnhDongVat().setIcon(getAnhDongVat("image/DongVat/" + dongVat.getHinhAnhDongVat()));
                         }
-
+                        
                         @Override
                         public void onStart() {
                         }
-
+                        
                         @Override
                         public void onFailure() {
                         }
-
+                        
                     });
-
+                    
                 }
             }
-
+            
             @Override
             public void mouseReleased(MouseEvent e) {
             }
-
+            
             @Override
             public void mouseEntered(MouseEvent e) {
             }
-
+            
             @Override
             public void mouseExited(MouseEvent e) {
             }
         };
     }
-
+    
     public void nhapExcel() throws NumberFormatException {
         int dialogResult = JOptionPane.showConfirmDialog(null, "Dữ liệu cũ sẽ bị xoá, tiếp tục?", "Nhập dữ liệu", JOptionPane.WARNING_MESSAGE);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
         }
-
+        
         getListDongVat(new OnGetListDongVatListener() {
             @Override
             public void onSuccess(ArrayList<ModelDongVat> dongVats) {
-
+                
                 for (ModelDongVat dongVat : dongVats) {
                     try {
                         String apiUrl = apiString + dongVat.getIDDongVat();
                         URL url = new URL(apiUrl);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("DELETE");
-
+                        
                         connection.getResponseCode();
-
+                        
                         fillData(view.getTfTimKiem().getText());
                         connection.disconnect();
                     } catch (IOException ex) {
@@ -188,19 +199,19 @@ public class ControllerDongVat {
                     }
                 }
             }
-
+            
             @Override
             public void onStart() {
             }
-
+            
             @Override
             public void onFailure() {
             }
         });
-
+        
         JTable table = view.getTable();
         new XuLyFileExcel().nhapExcel(table);
-
+        
         int row = view.getTable().getRowCount();
         for (int i = 0; i < row; i++) {
             String ten = table.getValueAt(i, 1).toString();
@@ -210,13 +221,13 @@ public class ControllerDongVat {
             String gioiTinh = table.getValueAt(i, 5).toString();
             String trangThai = table.getValueAt(i, 6).toString();
             String hinhAnh = table.getValueAt(i, 7).toString();
-
+            
             themDongVat(new ModelDongVat(ten, tenChuong, loai, tuoi, gioiTinh, trangThai, hinhAnh));
         }
         fillData(view.getTfTimKiem().getText());
         reset();
     }
-
+    
     public void themAnhDongVat() {
         JFileChooser fileChooser = new MyFileChooser("image/DongVat/");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -228,31 +239,31 @@ public class ControllerDongVat {
             view.getLbAnhDongVat().setIcon(getAnhDongVat(fileAnhDongVat.getPath()));
         }
     }
-
+    
     public void loadDongVat() {
         fillData("");
         reset();
         view.getTfTimKiem().setText("");
     }
-
+    
     public void xoaDongVat() {
         if (multirowSelected().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Hãy chọn một loài động vật");
             return;
         }
-
+        
         int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn xoá (các) động vật đã chọn?", "Xoá động vật?", JOptionPane.WARNING_MESSAGE);
         if (dialogResult == JOptionPane.YES_OPTION) {
             for (Integer id : multirowSelected()) {
                 try {
                     String apiUrl = apiString + id;
-
+                    
                     URL url = new URL(apiUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("DELETE");
-
+                    
                     connection.getResponseCode();
-
+                    
                     fillData(view.getTfTimKiem().getText());
                     connection.disconnect();
                 } catch (IOException ex) {
@@ -262,38 +273,38 @@ public class ControllerDongVat {
             reset();
         }
     }
-
+    
     public void luuDongVat() {
         try {
             dongVat = getDongVatFromTextField();
             if (dongVat == null) {
                 return;
             }
-
+            
             int id = Integer.parseInt(view.getTfID().getText());
-
+            
             int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có chắc là muốn sửa động vật có ID = " + id + "?", "Sửa động vật?", JOptionPane.WARNING_MESSAGE);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 dongVat.setIDDongVat(id);
                 Gson gson = new Gson();
                 String json = gson.toJson(dongVat);
-
+                
                 String apiUrl = apiString + id;
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
-
+                
                 try (OutputStream os = connection.getOutputStream()) {
                     byte[] input = json.getBytes("utf-8");
                     os.write(input, 0, input.length);
                 }
-
+                
                 connection.getResponseCode();
-
+                
                 fillData(view.getTfTimKiem().getText());
-
+                
                 dongVat.setHinhAnhDongVat(fileAnhDongVat.getName());
                 luuFileAnh();
                 view.getLbAnhDongVat().setIcon(getAnhDongVat("image/DongVat/" + fileAnhDongVat.getName()));
@@ -304,30 +315,30 @@ public class ControllerDongVat {
             System.out.println("controller/SaveButtonListener" + ex);
         }
     }
-
+    
     public void timKiemDongVat() {
         fillData(view.getTfTimKiem().getText().toLowerCase());
         reset();
     }
-
+    
     public ImageIcon getAnhDongVat(String src) {// 
         BufferedImage img = null;
         File fileImg = new File(src);
-
+        
         try {
             img = ImageIO.read(fileImg);
             fileAnhDongVat = new File(src);
         } catch (IOException e) {
-
+            
         }
-
+        
         if (img != null) {
             Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             return new ImageIcon(dimg);
         }
         return null;
     }
-
+    
     public void reset() {
         try {
             isDuplicate = false;
@@ -336,15 +347,15 @@ public class ControllerDongVat {
             view.getTfLoai().setSelectedItem("");
             IntegerDocumentFilter.clearTextField(view.getTfTuoi());
             view.getTfGioiTinh().setSelectedItem("");
-
+            
             fileAnhDongVat = null;
             view.getLbAnhDongVat().setIcon(getAnhDongVat(""));
         } catch (Exception e) {
             System.out.println("controller/resset" + e);
         }
-
+        
     }
-
+    
     public ModelDongVat getDongVatFromTextField() {
         String tenchuong = view.getTfTenChuong().getSelectedItem().toString().trim();
         String ten = view.getTfTen().getText().trim();
@@ -353,7 +364,7 @@ public class ControllerDongVat {
         String gioiTinh = view.getTfGioiTinh().getSelectedItem().toString().trim();
         String trangThai = view.getTfTrangThai().getSelectedItem().toString().trim();
         int age;
-
+        
         if (tenchuong.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Hãy nhập tên chuồng");
             return null;
@@ -373,38 +384,38 @@ public class ControllerDongVat {
             JOptionPane.showMessageDialog(null, "Hãy nhập trạng thái động vật");
             return null;
         }
-
+        
         try {
             age = Integer.parseInt(tuoi);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Hãy nhập tuổi đúng định dạng");
             return null;
         }
-
+        
         String anh = "";
         if (fileAnhDongVat != null) {
             anh = fileAnhDongVat.getName();
         }
         return new ModelDongVat(ten, tenchuong, loai, age, gioiTinh, trangThai, anh);
-
+        
     }
-
+    
     public void luuFileAnh() {
         if (fileAnhDongVat != null) {
             BufferedImage bImage;
             try {
                 File initialImage = new File(fileAnhDongVat.getPath());
                 bImage = ImageIO.read(initialImage);
-
+                
                 ImageIO.write(bImage, "png", new File("image/DongVat/" + fileAnhDongVat.getName()));
-
+                
             } catch (IOException e) {
                 System.out.println("controller/luuFileAnh" + e.getMessage());
             }
         }
-
+        
     }
-
+    
     public List<Integer> multirowSelected() {
         List<Integer> selectedIDs = new ArrayList<>();
         int[] selectedRows = view.getTable().getSelectedRows();
@@ -414,22 +425,22 @@ public class ControllerDongVat {
         }
         return selectedIDs;
     }
-
+    
     private void fillData(String searchString) {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
         ArrayList<String> loaiListRaw = new ArrayList<>();
         ControllerChuongTrai controllerChuongTrai = new ControllerChuongTrai();
-
+        
         view.getTfLoai().removeAllItems();
         view.getTfTenChuong().removeAllItems();
-
+        
         tableModel.setRowCount(0);
-
+        
         for (ModelChuongTrai chuongTrai : controllerChuongTrai.getListHabitat()) {
             view.getTfTenChuong().addItem(chuongTrai.getName());
         }
-
+        
         getListDongVat(new OnGetListDongVatListener() {
             @Override
             public void onSuccess(ArrayList<ModelDongVat> dongVats) {
@@ -448,63 +459,63 @@ public class ControllerDongVat {
                         });
                     }
                 }
-
+                
                 view.setLabelSLDongVat("Tổng số động vật: " + dongVats.size());
                 table.setModel(tableModel);
                 Utils.Utility.hideColumn(table, 7);
-
+                
                 HashSet<String> setWithoutDuplicates = new HashSet<>(loaiListRaw);
                 ArrayList<String> loaiList = new ArrayList<>(setWithoutDuplicates);
                 Collections.sort(loaiList);
-
+                
                 for (String loai : loaiList) {
                     view.getTfLoai().addItem(loai);
                 }
             }
-
+            
             @Override
             public void onStart() {
             }
-
+            
             @Override
             public void onFailure() {
             }
         });
     }
-
+    
     public void themDongVat(ModelDongVat dongVat) {
         try {
             Gson gson = new Gson();
             String json = gson.toJson(dongVat);
-
+            
             String apiUrl = apiString;
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
-
+            
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = json.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
             connection.getResponseCode();
-
+            
             connection.disconnect();
         } catch (IOException ex) {
             System.out.println("Controller.ControllerDongVat.themDongVat() " + ex);
         }
     }
-
+    
     public void getDongVat(int id, final OnGetDongVatListener listener) {
         try {
             listener.onStart();
             String apiUrl = apiString + id;
-
+            
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-
+            
             StringBuilder responseBuilder;
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 responseBuilder = new StringBuilder();
@@ -513,10 +524,10 @@ public class ControllerDongVat {
                     responseBuilder.append(inputLine);
                 }
             }
-
+            
             Gson gson = new Gson();
             dongVat = gson.fromJson(responseBuilder.toString(), ModelDongVat.class);
-
+            
             connection.getResponseCode();
             connection.disconnect();
             listener.onSuccess(dongVat);
@@ -525,16 +536,16 @@ public class ControllerDongVat {
             listener.onFailure();
         }
     }
-
+    
     public void getListDongVat(final OnGetListDongVatListener listener) {
         try {
             listener.onStart();
-
+            
             String apiUrl = apiString;
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-
+            
             StringBuilder responseBuilder;
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 responseBuilder = new StringBuilder();
@@ -543,11 +554,11 @@ public class ControllerDongVat {
                     responseBuilder.append(inputLine);
                 }
             }
-
+            
             Gson gson = new Gson();
             ModelDongVat[] modelsArray = gson.fromJson(responseBuilder.toString(), ModelDongVat[].class);
             ArrayList<ModelDongVat> dongvats = new ArrayList<>(Arrays.asList(modelsArray));
-
+            
             connection.disconnect();
             listener.onSuccess(dongvats);
         } catch (JsonSyntaxException | IOException e) {
@@ -556,47 +567,56 @@ public class ControllerDongVat {
             listener.onFailure();
         }
     }
-
+    
     public interface OnGetListDongVatListener {
-
+        
         void onSuccess(ArrayList<ModelDongVat> dongVats);
-
+        
         void onStart();
-
+        
         void onFailure();
     }
-
+    
     public interface OnGetDongVatListener {
-
+        
         void onSuccess(ModelDongVat dongVat);
-
+        
         void onStart();
-
+        
         void onFailure();
     }
-
+    
     public boolean isDuplicateTenDongVat(ModelDongVat dongVatCheck) {
         isDuplicate = false;
         getListDongVat(new OnGetListDongVatListener() {
             @Override
             public void onSuccess(ArrayList<ModelDongVat> dongVats) {
                 for (ModelDongVat dongVat : dongVats) {
-                    if (dongVat.getTenDongVat().equals(dongVatCheck.getTenDongVat())) {
+                    if (dongVat.getIDDongVat() != dongVatCheck.getIDDongVat() && dongVat.getTenChuong().equals(dongVatCheck.getTenChuong())) {
                         isDuplicate = true;
-                        break;
                     }
                 }
             }
-
+            
             @Override
             public void onStart() {
             }
-
+            
             @Override
             public void onFailure() {
             }
         });
-
-        return isDuplicate; // Trả về giá trị trùng lặp
+        return isDuplicate;
+    }
+    
+    public boolean isHatbitatFull(String tenChuong) {
+        for (ModelChuongTrai chuongTrai : chuongTrai.getListHabitat()) {
+            if (chuongTrai.getName().contains(tenChuong)
+                    && chuongTrai.getQuantity_current() >= chuongTrai.getQuantity()) {
+                return true;
+            }
+        }
+        return false;
+        
     }
 }

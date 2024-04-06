@@ -9,8 +9,9 @@ package Model;
  * @author Duong
  */
 public class ModelChuongTrai {
-    private String Name,Img;
-    private int ID,QuantityCurrent,Quantity;
+
+    private String Name, Img;
+    private int ID, QuantityCurrent, Quantity;
     private float Area;
 
     public ModelChuongTrai() {
@@ -26,7 +27,7 @@ public class ModelChuongTrai {
 
     @Override
     public String toString() {
-        return (Name+ID+Area+Quantity).toLowerCase();
+        return (Name + ID + Area + Quantity).toLowerCase();
     }
 
     public String getName() {
@@ -44,7 +45,7 @@ public class ModelChuongTrai {
     public void setImg(String Img) {
         this.Img = Img;
     }
-    
+
     public int getId() {
         return ID;
     }

@@ -17,7 +17,7 @@ import org.jfree.chart.JFreeChart;
  *
  * @author ACER
  */
-public class XuLyPDF {
+public class XuLyPNG {
 
     public static void export(JFreeChart chart) {
         try {

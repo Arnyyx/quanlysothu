@@ -29,10 +29,10 @@ public class Main {
         if (!isApiAvailable(Utils.Utility.apiString)) {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến máy chủ");
         } else {
-//            new ViewDangNhap();
-            Menu.quyen = "QL";
-            ViewDongVat v = new ViewDongVat();
-            new ControllerDongVat(v);
+            new ViewDangNhap();
+//            Menu.quyen = "QL";
+//            ViewDongVat v = new ViewDongVat();
+//            new ControllerDongVat(v);
         }
     }
 

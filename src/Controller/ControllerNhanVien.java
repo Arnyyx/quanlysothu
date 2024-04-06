@@ -31,22 +31,16 @@ public class ControllerNhanVien {
     private ArrayList<ModelNhanVien> listNhanVien;
     String apiString = Utils.Utility.apiString + "nhanvien/";
 
-    public ControllerNhanVien() {
-    }
-
     public ControllerNhanVien(ViewNhanVien view) {
         this.view = view;
         addEventsNhanVien();
         loadDatatableNhanVien();
     }
 
-//    public void docDanhSach(){
-//        listNhanVien.getDanhSachNhanVien();
-//    }
+    public ControllerNhanVien() {
+    }
+
     public ArrayList<ModelNhanVien> getDanhSachNhanVien() {
-//        if (this.listNhanVien == null)
-//            docDanhSach();
-//        return this.listNhanVien;
         try {
             URL url = new URL(apiString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -68,9 +62,8 @@ public class ControllerNhanVien {
             return listNhanVien;
 
         } catch (HeadlessException | IOException | NumberFormatException ex) {
-
+//
         }
-//        return listNhanVien;
         return listNhanVien;
     }
 
@@ -98,9 +91,6 @@ public class ControllerNhanVien {
         return modelNhanVien;
     }
 
-//        public boolean kiemTraTrungMaNhanVien(String maNV) {
-//        return nvDB.kiemTraTrungMaNhanVien(maNV);
-//    }
     public boolean themNhanVien(String ten, String ma, String cv, String sex, String ns, String sdt, String add, String email, String nvl) {
 
         ten = ten.trim();
@@ -121,12 +111,7 @@ public class ControllerNhanVien {
             JOptionPane.showMessageDialog(null, "Tên nhân viên đang trống");
             return false;
         }
-//        if (kiemtraTrungMaNhanVien(ma)) {
-//            ModelNhanVien nv = new ModelNhanVien();
-//            nv.setMaNV(ma);
 
-//            return false;
-//        }
         ModelNhanVien nv = new ModelNhanVien();
 
         nv.setTenNV(ten);
@@ -139,39 +124,31 @@ public class ControllerNhanVien {
         nv.setEmail(email);
         nv.setNgayVaoLam(nvl);
 
-//        ArrayList<ModelNhanVien> listTK = getDanhSachNhanVien();
-//        for (ModelNhanVien modelNhanVien : listTK) {
-//            if (modelNhanVien.equals(nv)) {
-////                return true;
-//                JOptionPane.showMessageDialog(null, "Mã nhân viên đã tồn tại hoặc nhân viên đã tồn tại");
-//            }else{
-//                
-//            }
-//        }
-        try {
+        if (KiemTraTrung(-1, ma) == true) {
+            try {
+                Gson gson = new Gson();
+                String json = gson.toJson(nv);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(nv);
+                URL url = new URL(apiString);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
 
-            URL url = new URL(apiString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = json.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+                connection.getResponseCode();
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = json.getBytes("utf-8");
-                os.write(input, 0, input.length);
+                connection.disconnect();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Thêm nhân viên không thành công rùi huhuhu");
             }
-            connection.getResponseCode();
-
-            connection.disconnect();
-        } catch (IOException ex) {
-//            return false;
-            JOptionPane.showMessageDialog(null, "Thêm nhân viên không thành công rùi huhuhu");
+            JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công rùi nè");
+            loadDatatableNhanVien();
+            return false;
         }
-        JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công rùi nè");
-        loadDatatableNhanVien();
         return false;
     }
 
@@ -200,6 +177,7 @@ public class ControllerNhanVien {
             JOptionPane.showMessageDialog(null, "Mã nhân viên đang trống");
             return false;
         }
+
         ModelNhanVien nv = new ModelNhanVien();
         nv.setID(Id);
         nv.setTenNV(ten);
@@ -211,29 +189,45 @@ public class ControllerNhanVien {
         nv.setDiaChi(add);
         nv.setEmail(email);
         nv.setNgayVaoLam(nvl);
-        try {
-            Gson gson = new Gson();
-            String json = gson.toJson(nv);
 
-            URL url = new URL(apiString + Id);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
+        if (KiemTraTrung(Id, ma) == true) {
+            try {
+                Gson gson = new Gson();
+                String json = gson.toJson(nv);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = json.getBytes("utf-8");
-                os.write(input, 0, input.length);
+                URL url = new URL(apiString + Id);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("PUT");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = json.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+                connection.getResponseCode();
+                connection.disconnect();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên không thành công rùi huhuhu");
             }
-            connection.getResponseCode();
-            connection.disconnect();
-        } catch (IOException ex) {
-            //            System.out.println("Controller.ControllerNhanVien.xoaNhanVien() " + ex);
-            JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên không thành công rùi huhuhu");
+            JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thành công rùi nè");
+            loadDatatableNhanVien();
+            return false;
         }
-        JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thành công rùi nè");
-        loadDatatableNhanVien();
         return false;
+    }
+
+    public boolean KiemTraTrung(int Id, String ma) {
+
+        for (ModelNhanVien modelNhanVien : getDanhSachNhanVien()) {
+            if (modelNhanVien.getMaNV().equals(ma) && modelNhanVien.getID() == (Id)) {
+                return true;
+            } else if (modelNhanVien.getMaNV().equals(ma) && modelNhanVien.getID() != (Id)) {
+                JOptionPane.showMessageDialog(null, "Mã nhân viên đã tồn tại");
+                return false;
+            }
+        }
+        return true;
     }
 
     public ArrayList<ModelNhanVien> timNhanVien(String tuKhoa) {
@@ -422,11 +416,6 @@ public class ControllerNhanVien {
         }
     }
 
-    public void kiemtraTrungMaNhanVien(String ma) {
-
-//        return false;
-    }
-
     public void loadDatatableNhanVien() {
 
         view.getDtmNhanVien().setRowCount(0);
@@ -451,5 +440,4 @@ public class ControllerNhanVien {
         }
         view.getTable().setModel(dtm);
     }
-
 }

@@ -230,9 +230,14 @@ public class ViewChuongTrai extends JFrame {
 
     public void Clear() {
         tfArea.setText("");
+        tfName.setText("");
         tfQuantity.setText("");
         tfQuantityCurrent.setText("");
         btnEnv.setEnabled(false);
+    }
+
+    public boolean CheckNull() {
+        return tfName.getText().isEmpty() || tfArea.getText().isEmpty() || tfQuantity.getText().isEmpty();
     }
 
     public void addImageChangeButtonListener(ActionListener listener) {
@@ -282,7 +287,7 @@ public class ViewChuongTrai extends JFrame {
     public JLabel getLbName() {
         return lbName;
     }
-    
+
     public JLabel getLbArea() {
         return lbArea;
     }

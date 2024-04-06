@@ -58,7 +58,7 @@ public class ControllerThongKeDongVat {
             view.getBtnXuat().setEnabled(true);
         });
         view.getBtnXuat().addActionListener((e) -> {
-            Utils.XuLyPDF.export(chart);
+            Utils.XuLyPNG.export(chart);
         });
     }
 

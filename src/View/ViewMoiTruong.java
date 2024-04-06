@@ -5,6 +5,7 @@
 package View;
 
 import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,6 +13,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.time.Instant;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -32,9 +35,9 @@ public class ViewMoiTruong extends JFrame {
 
     private JLabel label = new JLabel("Quản lý Môi Trường", SwingConstants.CENTER);
 
-    private String[] lableStrings = {"Mã", "Tên chuồng","Tên nhân viên","Ngày tháng", "Trạng thái", "Mô tả chi tiết"};
+    private String[] lableStrings = {"Mã", "Tên chuồng", "Tên nhân viên", "Ngày tháng", "Trạng thái", "Mô tả chi tiết"};
     private String[] statestrings = {"Tốt", "Bình thường", "Tệ"};
-    
+
     private JLabel lbID = new JLabel(lableStrings[0]);
     private JLabel lbIDHabitat = new JLabel(lableStrings[1]);
     private JLabel lbStaff = new JLabel(lableStrings[2]);
@@ -73,6 +76,10 @@ public class ViewMoiTruong extends JFrame {
         setTitle("Quản lý môi trường");
         setSize(800, 600);
 
+        tfDate.setMaxSelectableDate(Date.from(Instant.now()));
+        JTextFieldDateEditor editor = (JTextFieldDateEditor) tfDate.getDateEditor();
+        editor.setEditable(false);
+
         // Panel chứa table
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.add(new JScrollPane(table), BorderLayout.CENTER);
@@ -106,7 +113,7 @@ public class ViewMoiTruong extends JFrame {
         inputPanel.add(lbIDHabitat, gbc);
         gbc.gridx = 1;
         inputPanel.add(tfIDHabitat, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         inputPanel.add(lbStaff, gbc);
@@ -401,10 +408,9 @@ public class ViewMoiTruong extends JFrame {
 
     public void Clear() {
         tfID.setText("");
-        tfStaff.setSelectedItem(null);
         tfDescription.setText("");
         tfSearch.setText("");
-        tfDate.setDate(null);
+        tfDate.setDate(Date.from(Instant.now()));
     }
-    
+
 }
