@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 07, 2024 lúc 09:17 AM
+-- Thời gian đã tạo: Th4 07, 2024 lúc 02:40 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -211,17 +211,20 @@ INSERT INTO `tabledongvat` (`IDDongVat`, `TenDongVat`, `TenChuong`, `LoaiDongVat
 --
 
 CREATE TABLE `tableloaive` (
-  `IDLoaiVe` int(11) NOT NULL,
-  `TenLoaiVe` varchar(255) NOT NULL,
-  `KhuVuc` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `IdLoaiVe` int(11) NOT NULL,
+  `TenLoaiVe` varchar(100) NOT NULL,
+  `KhuVuc` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tableloaive`
 --
 
-INSERT INTO `tableloaive` (`IDLoaiVe`, `TenLoaiVe`, `KhuVuc`) VALUES
-(1, '1', '1');
+INSERT INTO `tableloaive` (`IdLoaiVe`, `TenLoaiVe`, `KhuVuc`) VALUES
+(1, 'Vé Thường', 'Khu Sở Thú'),
+(2, 'Vé Vip', 'Khu Sở Thú + Khu Vui Chơi'),
+(4, 'Vé Pro', 'Khu Sở Thú + Khu Vui Chơi + Thuỷ Cung'),
+(5, 'Vé Pro Max', 'Tất cả');
 
 -- --------------------------------------------------------
 
@@ -311,12 +314,13 @@ CREATE TABLE `vethamquan` (
 --
 
 INSERT INTO `vethamquan` (`IdVe`, `IDNhanVien`, `TenVe`, `LoaiVe`, `GiaVe`, `SoLuong`) VALUES
-(15, 1, '134567', 'Người lớn', 1, 1),
-(16, 6, '3', 'Người lớn', 33, 3),
-(17, 2, '2', 'Người lớn', 2, 2),
-(18, 1, '1', 'Người lớn', 1, 1),
-(19, 1, '2', 'Người lớn', 3, 4),
-(20, 1, '1', 'Người lớn', 1, 1);
+(15, 1, 'Vé ngày 4/7', 'Vé Thường', 10000, 20),
+(16, 6, 'Vé ngày 4/7 chiều', 'Vé Vip', 10000, 30),
+(17, 2, 'Vé đoàn thăm quan 5/7', 'Vé Pro Max', 20000, 30),
+(18, 1, 'Vé ngày 5/7', 'Vé Pro Max', 1000000, 10),
+(19, 1, 'Vé ngày 6/7', 'Vé Pro Max', 20, 100),
+(20, 1, 'Vé ngày 6/7', 'Vé Vip', 50000, 1000),
+(21, 1, 'Vé ngày 4/7', 'Vé Thường', 10000, 20);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -369,7 +373,7 @@ ALTER TABLE `tabledongvat`
 -- Chỉ mục cho bảng `tableloaive`
 --
 ALTER TABLE `tableloaive`
-  ADD PRIMARY KEY (`IDLoaiVe`);
+  ADD PRIMARY KEY (`IdLoaiVe`);
 
 --
 -- Chỉ mục cho bảng `taikhoan`
@@ -437,7 +441,7 @@ ALTER TABLE `tabledongvat`
 -- AUTO_INCREMENT cho bảng `tableloaive`
 --
 ALTER TABLE `tableloaive`
-  MODIFY `IDLoaiVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `IdLoaiVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `taikhoan`
@@ -455,7 +459,7 @@ ALTER TABLE `thucan`
 -- AUTO_INCREMENT cho bảng `vethamquan`
 --
 ALTER TABLE `vethamquan`
-  MODIFY `IdVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `IdVe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
