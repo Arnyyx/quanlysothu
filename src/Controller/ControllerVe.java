@@ -6,6 +6,7 @@ package Controller;
 
 import Model.ModelVe;
 import Model.ModelLoaiVe;
+import Model.ModelNhanVien;
 import Utils.IntegerDocumentFilter;
 import Utils.XuLyFileExcel;
 import View.ViewVe;
@@ -22,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -218,14 +220,13 @@ public class ControllerVe {
                     os.write(input, 0, input.length);
                 }
 
-                fillData(view.getTfTimKiem().getText());
-
                 connection.getResponseCode();
                 connection.disconnect();
             }
         } catch (HeadlessException | IOException | NumberFormatException ex) {
             System.out.println("Controller.ControllerVe.luuVe()" + ex);
         }
+        fillData(view.getTfTimKiem().getText());
     }
 
     public void timKiemVe() {
@@ -345,7 +346,7 @@ public class ControllerVe {
                     ModelLoaiVe[] modelsArray = gson.fromJson(responseBuilder.toString(), ModelLoaiVe[].class);
 
                     ArrayList<ModelLoaiVe> loaiList = new ArrayList<>(Arrays.asList(modelsArray));
-                     view.getTfLoai().removeAllItems();
+                    view.getTfLoai().removeAllItems();
                     for (ModelLoaiVe loai : loaiList) {
                         view.getTfLoai().addItem(loai.getTenLoaiVe());
                     }
@@ -353,6 +354,38 @@ public class ControllerVe {
                 } catch (JsonSyntaxException | IOException e) {
                     System.out.println("Controller.ControllerVe.getListLoaiVe()" + e);
                     JOptionPane.showMessageDialog(view, "Không thể kế nối đến máy chủ");
+                }
+                try {
+                    URL url = new URL("http://localhost:8000/nhanvien");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    Gson gson = new Gson();
+                    ModelNhanVien[] nccArray = gson.fromJson(response.toString(), ModelNhanVien[].class);
+                    ArrayList<ModelNhanVien> nvArrayList = new ArrayList<>(Arrays.asList(nccArray));
+                    ArrayList<Integer> nvListRaw = new ArrayList<>();
+                    for (ModelNhanVien ncc : nvArrayList) //            thêm idNCC của mỗi đối tượng vào danh sách nccListRaw.
+                    {
+                        nvListRaw.add(ncc.getID());
+                    }
+                    HashSet<Integer> setWithoutDuplicates = new HashSet<>(nvListRaw);
+                    ArrayList<Integer> nvList = new ArrayList<>(setWithoutDuplicates);
+                    Collections.sort(nvList);
+
+                    for (int idNV : nvList) {
+                        view.getTfIDNhanVien().addItem(String.valueOf(idNV));
+                    }
+                    connection.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Đã xảy ra lỗi khi truy cập dữ liệu Nhân viên: " + e.getMessage());
                 }
             }
 
