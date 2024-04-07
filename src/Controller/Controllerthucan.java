@@ -6,11 +6,8 @@ import Model.ModelNCC;
 
 import View.ViewThucAn;
 import com.google.gson.Gson;
-import com.mysql.cj.xdevapi.Statement;
-import com.sun.jdi.connect.spi.Connection;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.io.BufferedReader;
@@ -64,6 +61,7 @@ public class Controllerthucan {
             connection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Đã xảy ra lỗi khi truy cập dữ liệu thức ăn: " + e.getMessage());
         }
         try {
             URL url = new URL("http://localhost:8000/ncc");
@@ -81,12 +79,14 @@ public class Controllerthucan {
             ModelNCC[] nccArray = gson.fromJson(response.toString(), ModelNCC[].class);
             nccArrayList = new ArrayList<>(Arrays.asList(nccArray));
             ArrayList<Integer> nccListRaw = new ArrayList<>();
-            for (ModelNCC ncc : nccArrayList) {
+            for (ModelNCC ncc : nccArrayList) //            thêm idNCC của mỗi đối tượng vào danh sách nccListRaw.
+            {
                 nccListRaw.add(ncc.getIdNCC());
             }
             HashSet<Integer> setWithoutDuplicates = new HashSet<>(nccListRaw);
             ArrayList<Integer> nccList = new ArrayList<>(setWithoutDuplicates);
             Collections.sort(nccList);
+//            sắp xếp danh sách nccList theo thứ tự tăng dần.
 
             for (int ncc : nccList) {
                 view.getSupplierField().addItem(ncc);
@@ -94,6 +94,7 @@ public class Controllerthucan {
             connection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Đã xảy ra lỗi khi truy cập dữ liệu NCC: " + e.getMessage());
         }
         try {
             URL url = new URL("http://localhost:8000/dongvat");
@@ -128,6 +129,7 @@ public class Controllerthucan {
             connection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Đã xảy ra lỗi khi truy cập dữ liệu động vật: " + e.getMessage());
         }
         return foodArrayList;
 
@@ -142,8 +144,6 @@ public class Controllerthucan {
         listfood = getListFood();
         if (!search.equals("")) {
             for (ModelThucAn food : listfood) {
-//                loaiListRaw.add(food.getTenThucAn());
-//                TrangThaiListRaw.add(habitat.getState());
                 if (food.getTenThucAn().toLowerCase().contains(search.toLowerCase())) {
                     tableModel.addRow(new Object[]{
                         food.getIdThucAn(),
@@ -159,8 +159,6 @@ public class Controllerthucan {
             }
         } else {
             for (ModelThucAn food : listfood) {
-//                loaiListRaw.add(habitat.getName());
-//                TrangThaiListRaw.add(habitat.getState());
                 tableModel.addRow(new Object[]{
                     food.getIdThucAn(),
                     food.getTenThucAn(),
@@ -245,31 +243,60 @@ public class Controllerthucan {
     }
 
     private void BTNADD() {
-        view.getAddButton().addActionListener((e) -> {
-            if (view.getNameField().getText().isEmpty() || view.getTypeField().getText().isEmpty() || view.getAnimalIdField().getSelectedItem() == null || view.getQuantityField().getText().isEmpty() || view.getExpiryField().getText().isEmpty() || view.getSupplierField().getSelectedItem() == null) {
-                // Hiển thị thông báo yêu cầu nhập đủ thông tin trên giao diện người dùng
-                JOptionPane.showMessageDialog(view, "Vui lòng nhập đủ thông tin vào các trường");
+        view.getAddButton().addActionListener(e -> {
+            String name = view.getNameField().getText();
+            String loai = view.getTypeField().getText();
+            String iddongvatStr = view.getAnimalIdField().getSelectedItem().toString();
+            String soluongStr = view.getQuantityField().getText();
+            String idnccStr = view.getSupplierField().getSelectedItem().toString();
+            String hsd = view.getExpiryField().getText();
 
-                // Hoặc bạn có thể thiết lập thông báo lỗi vào từng trường nhập liệu cụ thể để hướng dẫn người dùng
+            if (name.isEmpty() || loai.isEmpty() || iddongvatStr.isEmpty() || soluongStr.isEmpty() || idnccStr.isEmpty() || hsd.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập đủ thông tin vào các trường");
             } else {
                 try {
-                    String name = view.getNameField().getText();
-                    String loai = view.getTypeField().getText();
-                    int iddongvat = Integer.parseInt(view.getAnimalIdField().getSelectedItem().toString());
-                    int soluong = Integer.parseInt(view.getQuantityField().getText());
-                    String hsd = view.getExpiryField().getText();
-                    int idncc = Integer.parseInt(view.getSupplierField().getSelectedItem().toString());
+                    int iddongvat = Integer.parseInt(iddongvatStr);
+                    int soluong = Integer.parseInt(soluongStr);
+                    int idncc = Integer.parseInt(idnccStr);
 
-                    ModelThucAn food = new ModelThucAn(name, loai, iddongvat, soluong, hsd, idncc);
-
-                    Postfood(food);
-                    view.clear();
-                    fillData("");
+                    // Kiểm tra trùng tên thức ăn
+                    boolean exists = checkDuplicateFoodName(name);
+                    if (exists) {
+                        JOptionPane.showMessageDialog(view, "Tên thức ăn đã tồn tại. Vui lòng nhập tên thức ăn khác.");
+                    } else {
+                        ModelThucAn food = new ModelThucAn(name, loai, iddongvat, soluong, hsd, idncc);
+                        Postfood(food);
+                        view.clear();
+                        fillData("");
+                    }
                 } catch (NumberFormatException ex) {
-                    // Xử lý ngoại lệ NumberFormatException ở đây (ví dụ: hiển thị thông báo lỗi cho người dùng)
+                    JOptionPane.showMessageDialog(view, "Vui lòng nhập số nguyên cho ID Động vật, Số lượng và ID Nhà cung cấp.");
                 }
             }
         });
+    }
+
+    private boolean checkDuplicateFoodName(String name) {
+        try {
+            String apiUrl = "http://localhost:8000/thucan/" + URLEncoder.encode(name, StandardCharsets.UTF_8);
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String response = in.readLine();
+                in.close();
+
+                // Parse the response and determine if the food name is a duplicate
+                return response != null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exceptions here
+        }
+        return false; // Return false if therse's an error or no duplicate check result
     }
 
     private void BTNUPDATE() {
@@ -434,4 +461,11 @@ public class Controllerthucan {
             view.getTable().setModel(statisticsTableModel);
         });
     }
+
+//    public static void main(String[] args) {
+//        ViewThucAn view = new ViewThucAn();
+//        Controllerthucan control = new Controllerthucan(view);
+//        control.fillData(""); // Thêm tham số vào fillData
+//    }
+
 }

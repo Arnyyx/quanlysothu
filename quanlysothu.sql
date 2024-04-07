@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 02, 2024 lúc 02:47 PM
+-- Thời gian đã tạo: Th4 07, 2024 lúc 09:17 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `envmanager` (
   `ID` int(10) NOT NULL,
   `IDHabitat` varchar(255) NOT NULL,
-  `Staff` varchar(255) NOT NULL,
+  `Staff` varchar(255) DEFAULT NULL,
   `Date` date NOT NULL,
   `State` varchar(255) NOT NULL,
   `Description` varchar(255) NOT NULL
@@ -56,11 +56,17 @@ CREATE TABLE `habitatmanager` (
 --
 
 INSERT INTO `habitatmanager` (`ID`, `Name`, `Area`, `QuantityCurrent`, `Quantity`, `Img`) VALUES
-(56, 'Hổ', 25, 10, 7, 'CaSauHabitat.jpg'),
-(57, 'Báo', 312, 0, 123, 'BaoHabitat.jpg'),
-(58, 'Chim', 25, 0, 7, 'ChimCongHabitat.jpg'),
-(59, 'Sói thảo nguyên', 25, 0, 5, 'SoiHabitat.jpeg'),
-(60, 'Huou Cao Co', 25, 0, 6, 'HuouCaoCoHabitat.jpg');
+(94, 'Báo', 31, 3, 5, 'BaoHabitat.jpg'),
+(95, 'Chim', 25, 2, 7, 'ChimCongHabitat.jpg'),
+(96, 'Hươu cao cổ', 25, 1, 6, 'VoiHabitat.jpg'),
+(97, 'Voi', 25, 2, 6, 'VoiHabitat.jpg'),
+(98, 'Cá sấu', 30, 1, 4, 'CaSauHabitat.jpg'),
+(99, 'Hà mã', 35, 1, 5, 'SuTuHabitat.jpg'),
+(100, 'Khỉ', 25, 2, 8, 'KhiHabitat.jpg'),
+(101, 'Sử tử', 30, 3, 4, 'SuTuHabitat.jpg'),
+(102, 'Tê giác', 30, 0, 4, 'TeGiacHabitat.jpg'),
+(103, 'Hồng hạc', 50, 1, 10, 'HongHacHabiat.jpg'),
+(104, 'Sói thảo nguyên', 55, 1, 5, 'SoiHabitat.jpeg');
 
 -- --------------------------------------------------------
 
@@ -113,26 +119,21 @@ CREATE TABLE `nhanvien` (
 --
 
 INSERT INTO `nhanvien` (`ID`, `TenNV`, `MaNV`, `ChucVu`, `GioiTinh`, `NgaySinh`, `SDT`, `DiaChi`, `Email`, `NgayVaoLam`) VALUES
-(1, 'Nguyen Huu Tu', 'QL01', 'Quản lý', 'Nam', '01/01/2003', 0, 'Cao Bang', 'HuuTu@gmail.com', '20/03/2024'),
 (2, 'Duc Anh Vu', 'NV01', 'Nhân viên', 'Nam', '01/01/2003', 0, 'Ha Noi', 'DucAnhVu@gmail.com', '20/03/2024'),
 (3, 'Xuan Duong Trinh', 'NV02', 'Nhân viên', 'Nam', '30/05/2003', 0, 'Ha Noi', 'XuanDuongTrinh@gmail.com', '20/03/2024'),
 (4, 'Kim Chi Trinh', 'NV03', 'Nhân viên', 'Nữ', '01/01/2003', 0, 'Thanh Hoa', 'KimChiTrinh@gmail.com', '20/03/2024'),
 (5, 'datngocc', 'NV04', 'Nhân viên', 'Nam', '09/10/2003', 0, 'Nam Dinh', 'datbeti913@gmail.com', '20/03/2024'),
-(12, 'Trịnh Công Sơn', 'NV05', 'Nhân viên', 'Nam', '01/01/2000', 0, 'Hội An', 'congsongtrinh@gmail.com', '20/03/2024'),
 (13, 'Hoàng Thùy Linh', 'NV06', 'Nhân viên', 'Nữ', '01/01/2000', 0, 'Cà Mau', 'thuylinhhoang@gmail.com', '20/03/2024'),
-(14, 'Nguyễn Sơn Tùng', 'QL02', 'Quản Lý', 'Nam', '01/01/2000', 0, 'Thái Bình', 'sontung@gmail.com', '20/03/2024'),
 (15, 'Đen không vâu', 'QL03', 'Quản Lý', 'Nam', '01/01/2000', 0, 'Hà Giang', 'denvau@gmail.com', '20/03/2024'),
 (16, 'Nguyễn Thị Bích Ngọc', 'NV07', 'Nhân viên', 'Nữ', '17/04/2003', 0, 'Nam Định', 'ntbngocc@gmail.com', '20/03/2024'),
 (17, 'Hiếu PC', 'QL04', 'Quản lý', 'Nam', '01/01/2000', 0, 'Hà Nội', 'pchieu@gmail.com', '20/03/2024'),
 (18, 'Mono', 'NV08', 'Nhân viên', 'Nam', '01/01/2000', 1, 'Thái Bình', 'mono@gmail.com', '22/03/2024'),
-(19, 'Cúc Kim Bùi', 'NV09', 'Nhân viên', 'Nữ', '01/01/20001', 2, 'Thái Bình', 'cuckimbui@gmail.com', '22/03/2024'),
 (20, 'Tôi là ai', 'QL05', 'Quản lý', 'Nữ', '01/01/2000', 0, 'Kiên Giang', 'toilaai@gmail.com', '22/03/2024'),
 (21, 'SuperMan', 'QL09', 'Quản lý', 'Nam', '01/01/2000', 0, 'Ngoài hành tinh', 'manofsuper@gmail.com', '22/03/2024'),
 (22, 'SpiderMan', 'NV09', 'Nhân viên', 'Nam', '01/01/2000', 0, 'Americano', 'nguoinhensieudang@gmail.com', '22/03/2024'),
 (23, 'IronMan', 'QL06', 'Quản lý', 'Nam', '01/01/1999', 0, 'Brazil', 'iamironman@gmail.com', '22/03/2024'),
 (24, 'CaptainAmericano', 'QL07', 'Quản lý', 'Nữ', '01/01/2002', 0, 'Cần Thơ', 'captainlatoi@gmail.com', '22/03/2024'),
-(25, 'J97', 'QL08', 'Quản lý', 'Nữ', '02/03/1987', 0, 'Nam Ấn Độ', 'jackdeeptry@gmail.com', '22/03/2024'),
-(26, 'We bear bear', 'NV09', 'Nhân viên', 'Nam', '04/05/2000', 0, 'Sông Nile', 'gaucho@gmail.com', '22/03/2024');
+(25, 'J97', 'QL08', 'Quản lý', 'Nữ', '02/03/1987', 0, 'Nam Ấn Độ', 'jackdeeptry@gmail.com', '22/03/2024');
 
 -- --------------------------------------------------------
 
@@ -154,9 +155,14 @@ CREATE TABLE `tablechamsocdongvat` (
 --
 
 INSERT INTO `tablechamsocdongvat` (`IDChamSoc`, `TenDongVat`, `LoaiChamSoc`, `NgayChamSoc`, `TenNhanVien`, `KetQua`) VALUES
-(13, 'Nala', 'Tiêm dại', '2024-03-29', 'Arny', 'Cute'),
-(17, 'Nala', 'Tiêm dại', '2024-03-29', 'Arny', 'Cute'),
-(18, 'Nala', 'Tiêm dại', '2024-03-28', 'Arny', 'Cute');
+(1, 'Simba', 'Tiêm phòng', '2024-04-01', 'Arny', 'Thành công'),
+(2, 'Phillip', 'Tiêm phòng', '2024-04-01', 'Arny', 'Thành công'),
+(3, 'Shanti', 'Tiêm dại', '2024-04-02', 'Arny', 'Thành công'),
+(4, 'Nala', 'Tiêm phòng', '2024-03-20', 'William', 'Không thành công'),
+(5, 'Timon', 'Đỡ đẻ', '2024-04-05', 'James', 'Thành công'),
+(6, 'Hana', 'Sơ cứu', '2024-04-07', 'Henry', 'Thành công'),
+(7, 'Jasmine', 'Đỡ đẻ', '2024-04-04', 'Mia', 'Thành công'),
+(8, 'Raja', 'Tiêm phòng', '2024-03-21', 'Adeline', 'Hẹn ngày khác');
 
 -- --------------------------------------------------------
 
@@ -180,16 +186,23 @@ CREATE TABLE `tabledongvat` (
 --
 
 INSERT INTO `tabledongvat` (`IDDongVat`, `TenDongVat`, `TenChuong`, `LoaiDongVat`, `TuoiDongVat`, `GioiTinhDongVat`, `TrangThaiDongVat`, `HinhAnhDongVat`) VALUES
-(153, 'Simba', 'Hổ', 'Sư tử', 5, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
-(154, 'Nala', 'Hổ', 'Sư tử', 4, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
-(155, 'Kiara', 'Hổ', 'Sư tử', 1, 'Cái', 'Khoẻ mạnh', 'sutu.jpg'),
-(156, 'Timon', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(157, 'ví dụ như đây là tên siêu dài', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(158, 'a', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(159, 'b', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(160, 'c', 'Hổ', 'Cầy vằn', 2, 'Đực', 'Khoẻ mạnh', 'vuoncao.jpg'),
-(161, '1', 'Hổ', 'Sư tử', 1, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
-(164, '2', 'Hổ', '1', 1, 'Đực', 'Khoẻ mạnh', '');
+(1, 'Simba', 'Sử tử', 'Sư tử', 5, 'Đực', 'Khoẻ mạnh', 'sutu.jpg'),
+(2, 'Nala', 'Sử tử', 'Sư tử', 4, 'Cái', 'Mang thai', 'sutucai.jpg'),
+(3, 'Kiara', 'Sử tử', 'Sư tử', 1, 'Cái', 'Khoẻ mạnh', 'sutucai.jpg'),
+(4, 'Timon', 'Báo', 'Báo', 2, 'Đực', 'Khoẻ mạnh', 'baodom.jpg'),
+(5, 'Pumbaa', 'Báo', 'Báo', 2, 'Đực', 'Khoẻ mạnh', 'baodom.jpg'),
+(6, 'Aurora', 'Chim', 'Thiên nga', 2, 'Cái', 'Bị bệnh', 'thienga.jpg'),
+(7, 'Phillip', 'Chim', 'Chim công', 4, 'Cái', 'Khoẻ mạnh', 'chimcong.jpg'),
+(8, 'Raja', 'Hươu cao cổ', 'Hươu cao cổ', 7, 'Cái', 'Mang thai', 'huoucaoco.jpg'),
+(9, 'Shanti', 'Voi', 'Voi', 12, 'Đực', 'Khoẻ mạnh', 'voi.jpg'),
+(10, 'Dumbo', 'Voi', 'Voi', 1, 'Đực', 'Khoẻ mạnh', 'voi.jpg'),
+(11, 'Bagheera', 'Cá sấu', 'Cá sấu', 5, 'Đực', 'Bị thương', 'casau.jpg'),
+(12, 'Hana', 'Hà mã', 'Hà mã', 3, 'Cái', 'Mang thai', 'hama.jpg'),
+(13, 'Wukong', 'Khỉ', 'Khỉ', 3, 'Đực', 'Khoẻ mạnh', 'khi.jpg'),
+(14, 'Abu', 'Khỉ', 'Khỉ đột', 6, 'Cái', 'Khoẻ mạnh', 'khidot.jpg'),
+(15, 'Jasmine', 'Báo', 'Hồng hạc', 7, 'Cái', 'Mang thai', 'honghac2.jpg'),
+(16, 'Genie', 'Hồng hạc', 'Hồng hạc', 8, 'Đực', 'Khoẻ mạnh', 'honghac.jpg'),
+(17, 'Jafar', 'Sói thảo nguyên', 'Sói', 9, 'Đực', 'Khoẻ mạnh', 'chosoi.jpg');
 
 -- --------------------------------------------------------
 
@@ -229,12 +242,12 @@ CREATE TABLE `taikhoan` (
 --
 
 INSERT INTO `taikhoan` (`ID`, `MaNV`, `TaiKhoan`, `MatKhau`, `Quyen`) VALUES
-(1, 'QL01', 'Tu', '1', 'QL'),
 (2, 'NV01', 'DucAnh', '1', 'NV'),
 (3, 'NV02', 'Duong', '1', 'NV'),
 (4, 'NV03', 'Chi', '1', 'NV'),
 (5, 'NV04', 'datngocc', '1', 'NV'),
-(22, 'QL02', '1', '1', 'QL');
+(31, 'QL03', '1', '1', 'QL'),
+(32, 'NV01', '2', '2', 'NV');
 
 -- --------------------------------------------------------
 
@@ -257,9 +270,9 @@ CREATE TABLE `thucan` (
 --
 
 INSERT INTO `thucan` (`IDThucAN`, `TenThucAn`, `LoaiThucAn`, `IdNCC`, `IdDongVat`, `SoLuong`, `HanThucAn`) VALUES
-(8, 'Cám', 'Đồ khô', 1, 153, 199, '2027'),
-(11, 'Chuối', 'Hoa quả', 3, 156, 100, '2027'),
-(12, 'Dâu Tây', 'Hoa Quả', 4, 159, 3344, '2025'),
+(8, 'Cám', 'Đồ khô', 1, 4, 199, '2027'),
+(11, 'Chuối', 'Hoa quả', 3, 11, 100, '2027'),
+(12, 'Dâu Tây', 'Hoa Quả', 4, 10, 3344, '2025'),
 (13, 'Cam', 'Hoa Quả', 5, 2, 333, '2025'),
 (14, 'Nhooo', 'Hoa quả', 6, 4, 444, '2026'),
 (15, 'Quýt', 'Hoa quả', 7, 6, 555, '2026'),
@@ -272,10 +285,10 @@ INSERT INTO `thucan` (`IDThucAN`, `TenThucAn`, `LoaiThucAn`, `IdNCC`, `IdDongVat
 (22, 'Hạt bí', 'Đồ Khô', 1, 5, 232, '2025'),
 (23, 'Hướng Dương', 'Đồ Khô', 1, 4, 444, '2025'),
 (24, 'Củ Từ', 'Rau củ', 9, 11, 111, '2026'),
-(25, 'Rau muống', 'Rau củ', 9, 14, 222, '2022'),
+(25, 'Rau muống', 'Rau củ', 9, 17, 222, '2022'),
 (26, 'Con Cò', 'Đồ Khô', 1, 13, 33, '2028'),
 (27, 'Thịt vịt', 'Đồ sống', 2, 16, 22, '2023'),
-(28, 'Hạt Điều', 'Đồ khô', 1, 34, 333, '2024'),
+(28, 'Hạt Điều', 'Đồ khô', 1, 11, 333, '2024'),
 (30, 'Cám', 'Đồ khô', 1, 1, 199, '2027');
 
 -- --------------------------------------------------------
@@ -350,7 +363,7 @@ ALTER TABLE `tablechamsocdongvat`
 ALTER TABLE `tabledongvat`
   ADD PRIMARY KEY (`IDDongVat`),
   ADD KEY `TenDongVat` (`TenDongVat`),
-  ADD KEY `TenChuong` (`TenChuong`);
+  ADD KEY `tabledongvat_ibfk_1` (`TenChuong`);
 
 --
 -- Chỉ mục cho bảng `tableloaive`
@@ -388,37 +401,37 @@ ALTER TABLE `vethamquan`
 -- AUTO_INCREMENT cho bảng `envmanager`
 --
 ALTER TABLE `envmanager`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT cho bảng `habitatmanager`
 --
 ALTER TABLE `habitatmanager`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT cho bảng `ncc`
 --
 ALTER TABLE `ncc`
-  MODIFY `IdNCC` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `IdNCC` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `nhanvien`
 --
 ALTER TABLE `nhanvien`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT cho bảng `tablechamsocdongvat`
 --
 ALTER TABLE `tablechamsocdongvat`
-  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `IDChamSoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+  MODIFY `IDDongVat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT cho bảng `tableloaive`
@@ -430,7 +443,7 @@ ALTER TABLE `tableloaive`
 -- AUTO_INCREMENT cho bảng `taikhoan`
 --
 ALTER TABLE `taikhoan`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `thucan`
@@ -464,13 +477,13 @@ ALTER TABLE `tablechamsocdongvat`
 -- Các ràng buộc cho bảng `tabledongvat`
 --
 ALTER TABLE `tabledongvat`
-  ADD CONSTRAINT `tabledongvat_ibfk_1` FOREIGN KEY (`TenChuong`) REFERENCES `habitatmanager` (`Name`);
+  ADD CONSTRAINT `tabledongvat_ibfk_1` FOREIGN KEY (`TenChuong`) REFERENCES `habitatmanager` (`Name`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `taikhoan`
 --
 ALTER TABLE `taikhoan`
-  ADD CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`);
+  ADD CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `thucan`

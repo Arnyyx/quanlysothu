@@ -299,9 +299,9 @@ public class ControllerChuongTrai {
                 float area = Float.parseFloat(table.getValueAt(i, 2).toString());
                 int quantityCurrent = Integer.parseInt(table.getValueAt(i, 3).toString());
                 int quantity = Integer.parseInt(table.getValueAt(i, 4).toString());
-//                String img = table.getValueAt(i, 5).toString();
+                String img = table.getValueAt(i, 5).toString();
 
-                PostHabitat(new ModelChuongTrai(name, area, quantityCurrent, quantity, ""));
+                PostHabitat(new ModelChuongTrai(name, area, quantityCurrent, quantity, img));
             }
             fillData(view.getTfSearch().getText());
             view.Clear();

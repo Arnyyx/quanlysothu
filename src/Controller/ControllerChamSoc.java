@@ -203,9 +203,11 @@ public class ControllerChamSoc {
     }
 
     public void loadChamSoc() {
+        view.getTable().setRowSorter(null);
         fillData("");
         reset();
         view.getTfTimKiem().setText("");
+        view.getTable().setAutoCreateRowSorter(true);
     }
 
     public void xoaChamSoc() {
@@ -330,6 +332,7 @@ public class ControllerChamSoc {
     private void fillData(String searchString) {
         DefaultTableModel tableModel = view.getTableModel();
         JTable table = view.getTable();
+        ArrayList<String> tenDongVatList = new ArrayList<>();
         ArrayList<String> loaiListRaw = new ArrayList<>();
         ControllerDongVat controllerDongVat = new ControllerDongVat();
 
@@ -342,7 +345,7 @@ public class ControllerChamSoc {
             @Override
             public void onSuccess(ArrayList<ModelDongVat> dongVats) {
                 for (ModelDongVat dongVat : dongVats) {
-                    view.getTfTenDongVat().addItem(dongVat.getTenDongVat());
+                    tenDongVatList.add(dongVat.getTenDongVat());
                 }
             }
 
@@ -376,11 +379,16 @@ public class ControllerChamSoc {
                 table.setModel(tableModel);
 
                 HashSet<String> setWithoutDuplicates = new HashSet<>(loaiListRaw);
-                ArrayList<String> loaiList = new ArrayList<>(setWithoutDuplicates);
-                Collections.sort(loaiList);
+                ArrayList<String> loaiChamSocList = new ArrayList<>(setWithoutDuplicates);
+                Collections.sort(loaiChamSocList);
 
-                for (String loai : loaiList) {
+                for (String loai : loaiChamSocList) {
                     view.getTfLoaiChamSoc().addItem(loai);
+                }
+                
+                Collections.sort(tenDongVatList);
+                for (String tenDongVat : tenDongVatList) {
+                    view.getTfTenDongVat().addItem(tenDongVat);
                 }
             }
 

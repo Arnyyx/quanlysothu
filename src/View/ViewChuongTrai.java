@@ -210,6 +210,7 @@ public class ViewChuongTrai extends JFrame {
         tableModel.addColumn(lableStrings[2]);
         tableModel.addColumn(lableStrings[3]);
         tableModel.addColumn(lableStrings[4]);
+        tableModel.addColumn(lableStrings[5]);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -235,8 +236,8 @@ public class ViewChuongTrai extends JFrame {
         tfQuantityCurrent.setText("");
         btnEnv.setEnabled(false);
     }
-
-    public boolean CheckNull() {
+    
+    public boolean CheckNull(){
         return tfName.getText().isEmpty() || tfArea.getText().isEmpty() || tfQuantity.getText().isEmpty();
     }
 
@@ -287,7 +288,7 @@ public class ViewChuongTrai extends JFrame {
     public JLabel getLbName() {
         return lbName;
     }
-
+    
     public JLabel getLbArea() {
         return lbArea;
     }

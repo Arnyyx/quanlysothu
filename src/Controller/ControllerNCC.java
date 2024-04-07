@@ -1,8 +1,12 @@
 package Controller;
 
 import Model.ModelNCC;
+import Model.ModelThucAn;
 import View.ViewNCC;
+import View.ViewThucAn;
 import com.google.gson.Gson;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
@@ -12,10 +16,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 //import jxl.Cell;
 //import jxl.Sheet;
@@ -61,8 +72,9 @@ public class ControllerNCC {
             nccArrayList = new ArrayList<>(Arrays.asList(nccArray));
 
             connection.disconnect();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Đã xảy ra lỗi khi truy cập dữ liệu NCC: " + e.getMessage());
         }
 
         return nccArrayList;
@@ -77,8 +89,6 @@ public class ControllerNCC {
         listncc = getListNCC("");
         if (!search.equals("")) {
             for (ModelNCC ncc : listncc) {
-//                loaiListRaw.add(food.getTenThucAn());
-//                TrangThaiListRaw.add(habitat.getState());
                 if (ncc.getTenNCC().toLowerCase().contains(search.toLowerCase())) {
                     tableModel.addRow(new Object[]{
                         ncc.getIdNCC(),
@@ -91,8 +101,6 @@ public class ControllerNCC {
             }
         } else {
             for (ModelNCC ncc : listncc) {
-//                loaiListRaw.add(habitat.getName());
-//                TrangThaiListRaw.add(habitat.getState());
                 tableModel.addRow(new Object[]{
                     ncc.getIdNCC(),
                     ncc.getTenNCC(),
@@ -105,6 +113,7 @@ public class ControllerNCC {
         table.setModel(tableModel);
 
     }
+
 
     private void CLICKTABLE() {
         view.getTable().addMouseListener(new MouseListener() {
@@ -154,59 +163,81 @@ public class ControllerNCC {
         });
     }
 
-    private void BTNADD() {
-        view.getAddButton().addActionListener((e) -> {
-            if (view.getNameField().getText().isEmpty() || view.getFoodTypeField().getText().isEmpty() || view.getLocationField().getText().isEmpty()) {
-                // Hiển thị thông báo yêu cầu nhập đủ thông tin trên giao diện người dùng
-                JOptionPane.showMessageDialog(view, "Vui lòng nhập đủ thông tin trong các trường");
-            } else {
-                try {
-                    // Lấy dữ liệu từ các trường nhập liệu
-                    String tenncc = view.getNameField().getText();
-                    String loaiThucan = view.getFoodTypeField().getText();
-                    String viTri = view.getLocationField().getText();
+   private void BTNADD() {
+    view.getAddButton().addActionListener((e) -> {
+        if (view.getNameField().getText().isEmpty() || view.getFoodTypeField().getText().isEmpty() || view.getLocationField().getText().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng nhập đủ thông tin trong các trường");
+        } else {
+            try {
+                String tenncc = view.getNameField().getText();
+                String loaiThucan = view.getFoodTypeField().getText();
+                String viTri = view.getLocationField().getText();
 
-                    // Tạo đối tượng ModelNCC mới
+                // Kiểm tra trùng tên nhà cung cấp
+                boolean exists = checkDuplicateNCCName(tenncc);
+                if (exists) {
+                    JOptionPane.showMessageDialog(view, "Nhà cung cấp đã tồn tại. Vui lòng nhập tên nhà cung cấp khác.");
+                } else {
                     ModelNCC ncc = new ModelNCC(tenncc, loaiThucan, viTri);
-
-                    // Gọi phương thức để gửi dữ liệu đến server
                     Postncc(ncc);
-
-                    // Xóa dữ liệu cũ và cập nhật bảng
                     view.clear();
                     fillData("");
-                } catch (NumberFormatException ex) {
-                    // Xử lý ngoại lệ NumberFormatException nếu cần
-                    ex.printStackTrace();
                 }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
             }
-        });
+        }
+    });
+}
+
+private boolean checkDuplicateNCCName(String tenncc) {
+    try {
+        URL url = new URL(apiString + '/' + URLEncoder.encode(tenncc, StandardCharsets.UTF_8));
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = in.readLine();
+            in.close();
+            
+            // Parse the response and determine if the NCC name is a duplicate
+            return response != null;
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+      JOptionPane.showMessageDialog(view, "Đã xảy ra lỗi khi kiểm tra trùng tên nhà cung cấp: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
+    return false; // Return false if there's an error or no duplicate check result
+}
 
-    private void BTNUPDATE() {
-        view.getUpdateButton().addActionListener((e) -> {
-            int idncc = Integer.parseInt(view.getIdField().getText());
-            String tenncc = view.getNameField().getText();
-            String loaithucan = view.getFoodTypeField().getText();
-            String vitri = view.getLocationField().getText();
 
-            ModelNCC ncc = new ModelNCC(tenncc, loaithucan, vitri);
-            ncc.setIdNCC(idncc);
-            Gson gson = new Gson();
-            String jsonInputString = gson.toJson(ncc);
+   private void BTNUPDATE() {
+    view.getUpdateButton().addActionListener((e) -> {
+        int idncc = Integer.parseInt(view.getIdField().getText());
+        String tenncc = view.getNameField().getText();
+        String loaithucan = view.getFoodTypeField().getText();
+        String vitri = view.getLocationField().getText();
 
-            try {
-                URL url = new URL(apiString + '/' + idncc);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("PUT");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
+        ModelNCC ncc = new ModelNCC(tenncc, loaithucan, vitri);
+        ncc.setIdNCC(idncc);
+        Gson gson = new Gson();
+        String jsonInputString = gson.toJson(ncc);
+        
+        try {
+            URL url = new URL(apiString + '/' + idncc);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
 
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes("utf-8");
-                    outputStream.write(input, 0, input.length);
-                }
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                outputStream.write(input, 0, input.length);
+            }
 
+           
                 connection.getResponseCode();
                 connection.disconnect();
             } catch (IOException ex) {
@@ -217,21 +248,21 @@ public class ControllerNCC {
 
         });
     }
-
     private void BTNDELETE() {
-        view.getDeleteButton().addActionListener((e) -> {
-            int idncc = Integer.parseInt(view.getIdField().getText());
+    view.getDeleteButton().addActionListener((e) -> {
+        int idncc = Integer.parseInt(view.getIdField().getText());
 
-            int choice = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn xóa?", "Xác nhận xóa",
-                    JOptionPane.YES_NO_OPTION);
-            if (choice == JOptionPane.YES_OPTION) {
-                Removencc(idncc);
-                JOptionPane.showMessageDialog(view, "Nhà cung cấp đã được xóa thành công.");
-                view.clear();
-                fillData("");
-            }
-        });
-    }
+        int choice = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn xóa?", "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            Removencc(idncc);
+            JOptionPane.showMessageDialog(view, "Nhà cung cấp đã được xóa thành công.");
+            view.clear();
+            fillData("");
+        }
+    });
+}
+
 
     private void BTNBACK() {
         view.getBackButton().addActionListener((e) -> {
@@ -326,4 +357,9 @@ public class ControllerNCC {
         }
 
     }
+//    public static void main(String[] args) {
+//        ViewNCC view = new ViewNCC();
+//        ControllerNCC control = new ControllerNCC(view);
+//        control.fillData(""); // Thêm tham số vào fillData
+//    }
 }
