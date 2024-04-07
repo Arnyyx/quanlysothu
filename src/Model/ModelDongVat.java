@@ -34,7 +34,7 @@ public class ModelDongVat {
 
     @Override
     public String toString() {
-        return (IDDongVat + TenDongVat + TenChuong + LoaiDongVat + TuoiDongVat + GioiTinhDongVat + TrangThaiDongVat + HinhAnhDongVat).toLowerCase();
+        return (IDDongVat + TenDongVat + TenChuong + LoaiDongVat + TuoiDongVat + GioiTinhDongVat + TrangThaiDongVat).toLowerCase();
     }
 
     public String getTenChuong() {
